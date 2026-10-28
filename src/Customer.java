@@ -1,0 +1,119 @@
+public abstract class Customer {
+    private final int id;
+    private int satisfaction;
+    private CustomerStatus status;
+    private Order order;
+
+    public Customer(int id) {
+        this.id = id;
+        this.satisfaction = 100;
+        this.status = CustomerStatus.WAITING;
+        this.order = null;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public int getSatisfaction() {
+        return satisfaction;
+    }
+
+    public CustomerStatus getStatus() {
+        return status;
+    }
+
+    public Order getOrder() {
+        return order;
+    }
+
+    public abstract int getSatisfactionLoss();
+
+    public void applyWaitingPenalty() {
+        if (status == CustomerStatus.WAITING || status == CustomerStatus.SEATED) {
+            satisfaction = Math.max(0, satisfaction - getSatisfactionLoss());
+        }
+    }
+
+    public ActionResult checkOrderPlacement() {
+        if (status != CustomerStatus.SEATED) {
+            return ActionResult.CUSTOMER_NOT_SEATED;
+        }
+        if (this.order != null) {
+            return ActionResult.ORDER_ALREADY_EXISTS;
+        }
+        return ActionResult.SUCCESS;
+    }
+
+    public ActionResult placeOrder(Order order) {
+        ActionResult result = checkOrderPlacement();
+        if (result != ActionResult.SUCCESS) {
+            return result;
+        }
+        if (order == null) {
+            return ActionResult.ORDER_NOT_FOUND;
+        }
+        if (order.getOrderStatus() != OrderStatus.PLACED) {
+            return ActionResult.ORDER_NOT_PLACED;
+        }
+
+        this.order = order;
+        return ActionResult.SUCCESS;
+    }
+
+    public boolean markSeated() {
+        if (status == CustomerStatus.WAITING) {
+            status = CustomerStatus.SEATED;
+            return true;
+        }
+        return false;
+    }
+
+    public boolean markJustServed() {
+        if (status != CustomerStatus.SEATED || order == null) {
+            return false;
+        }
+        if (order.getOrderStatus() != OrderStatus.SERVED) {
+            return false;
+        }
+
+        status = CustomerStatus.JUST_SERVED;
+        return true;
+    }
+
+    public boolean markEating() {
+        if (status == CustomerStatus.JUST_SERVED) {
+            status = CustomerStatus.EATING;
+            return true;
+        }
+        return false;
+    }
+
+    public boolean markReadyToPay() {
+        if (status == CustomerStatus.EATING) {
+            status = CustomerStatus.READY_TO_PAY;
+            return true;
+        }
+        return false;
+    }
+
+    public boolean markPaid() {
+        if (status == CustomerStatus.READY_TO_PAY) {
+            status = CustomerStatus.PAID;
+            return true;
+        }
+        return false;
+    }
+
+    public boolean markLeft() {
+        if (satisfaction != 0) {
+            return false;
+        }
+        if (status != CustomerStatus.WAITING && status != CustomerStatus.SEATED) {
+            return false;
+        }
+
+        status = CustomerStatus.LEFT;
+        return true;
+    }
+}
