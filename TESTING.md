@@ -1,19 +1,12 @@
-# Stage 1 test notes
+Test results
 
-Both runs use the required base setting. Compile using the instructions in
-[README.md](README.md), then run the commands below from the repository root.
-Each input file supplies one integer per prompt and omits automatically skipped
-staff prompts.
+I compiled the project with Eclipse's JDK 21 compiler using `--release 11`, then ran the Stage 1 and Stage 2 input files from the project root. The Stage 1 inputs are kept separate from the Stage 2 inputs.
 
-## Victory run
-
-Input: [stage-1-victory.txt](tests/inputs/stage-1-victory.txt)
+## Stage 1 victory
 
 ```sh
 java -cp out Main < tests/inputs/stage-1-victory.txt
 ```
-
-Verified final result:
 
 ```text
 RESULT: VICTORY!
@@ -25,18 +18,13 @@ Total Revenue: $66.00
 Average Satisfaction: 79.2
 ```
 
-## Defeat run
-
-Input: [stage-1-defeat.txt](tests/inputs/stage-1-defeat.txt)
-
-The Waiter chooses `0` on every turn. The Chef waits automatically because no
-orders are placed.
+## Stage 1 defeat
 
 ```sh
 java -cp out Main < tests/inputs/stage-1-defeat.txt
 ```
 
-Verified final result:
+The Waiter waits on every turn, so no orders are placed. The Chef waits automatically.
 
 ```text
 RESULT: DEFEAT!
@@ -47,33 +35,42 @@ Unhappy Departures: 2
 Total Revenue: $0.00
 Average Satisfaction: N/A
 ```
-# Stage 2 test results
 
-I ran `Stage2Main` manually in Eclipse with Java 21 and played through the Console menu. These were manual games, not automated tests. The files in `tests/inputs` are named for Stage 1, so I did not use them for these Stage 2 runs.
+## Stage 2 victory
 
-## Victory run
+This run includes Regular, VIP and Critic customers. Customer 2 gets the VIP discount. Customer 5 orders Pasta, which takes two preparation units. The Critic is served, but does not pay before the 18-turn limit. The sixth customer is seated on the last turn.
 
-I used the normal game menu to seat customers, take orders, prepare the food and serve the customers. The run included a Regular customer, a VIP and a Critic. I tried the Salad, Burger and Pasta orders. The Critic ordered Pasta, which needed two preparation units. After the food was served, the cashier processed payment automatically.
+Run it from the project root:
 
-The sixth customer was seated on the final turn, so there was no time left to finish that customer's order before the 18-turn limit.
+```sh
+java -cp out Stage2Main < tests/inputs/stage-2-victory.txt
+```
 
-The game showed this result at the end:
+On Windows Command Prompt, use:
+
+```bat
+type tests\inputs\stage-2-victory.txt | java -cp out Stage2Main
+```
+
+The run ends in victory because it reaches the base target of at least four paid customers, $45 revenue and 60 average satisfaction.
 
 ```text
 RESULT: VICTORY!
 Turns Played: 18 / 18
 Customers Served: 5
-Customers Paid: 5
+Customers Paid: 4
 Unhappy Departures: 0
-Total Revenue: $67.50
-Average Satisfaction: 74.8
+Total Revenue: $49.50
+Average Satisfaction: 81.5
 ```
 
-## Defeat run
+## Stage 2 defeat
 
-For this run, I entered `0` at every Waiter action prompt for all 18 turns. When there were no orders to prepare, the Chef waited automatically.
+This input makes the Waiter wait on every turn, so no orders are placed. The Chef waits automatically when there is nothing to prepare.
 
-The game showed this result at the end:
+```sh
+java -cp out Stage2Main < tests/inputs/stage-2-defeat.txt
+```
 
 ```text
 RESULT: DEFEAT!
@@ -82,5 +79,4 @@ Customers Served: 0
 Customers Paid: 0
 Unhappy Departures: 1
 Total Revenue: $0.00
-Average Satisfaction: N/A
-```
+Average Satisfaction: N
