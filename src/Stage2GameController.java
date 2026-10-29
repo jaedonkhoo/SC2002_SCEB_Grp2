@@ -226,7 +226,7 @@ public class Stage2GameController {
         waiter.resetForNewTurn();
     }
 
-    //This is the new code I add in.
+    //This is the code I add in.
     public boolean endTurn() {
         // Process later lifecycle stages first so a customer cannot advance twice this turn.
         // Newly READY_TO_PAY customers wait until next turn; JUST_SERVED customers only start eating.
