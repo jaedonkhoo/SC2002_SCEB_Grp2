@@ -32,7 +32,7 @@ commit or compare link.
 
 Pending recording.
 
-# SC2002 Restaurant Rush
+# SC2002 Restaurant Rush（stage 2)
 
 Repository: [SC2002_SCEB_Grp2](https://github.com/jaedonkhoo/SC2002_SCEB_Grp2)
 
