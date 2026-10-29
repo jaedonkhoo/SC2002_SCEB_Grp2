@@ -31,6 +31,7 @@ public class GameController {
         return !chef.hasActed();
     }
 
+    // These availability queries inspect the state without performing staff tasks.
     public List<Table> getFreeTables() {
         List<Table> freeTables = new ArrayList<>();
         for (Table table : gameState.getTables()) {
@@ -113,6 +114,7 @@ public class GameController {
             return ActionResult.CUSTOMER_NOT_FOUND;
         }
 
+        // Arrival IDs give a reproducible Salad -> Burger -> Pasta cycle.
         MenuItem item = menu.get((customerId - 1) % menu.size());
         Order order = new Order(item, item.getPriceCents());
         return waiter.takeOrder(customer, order);
@@ -185,6 +187,7 @@ public class GameController {
     }
 
     private void processAbandonment(Customer customer) {
+        // Only a new transition to LEFT counts, so departures cannot be counted again later.
         if (!customer.markLeft()) {
             return;
         }
@@ -208,6 +211,8 @@ public class GameController {
     }
 
     public boolean endTurn() {
+        // Process later lifecycle stages first so a customer cannot advance twice this turn.
+        // Newly READY_TO_PAY customers wait until next turn; JUST_SERVED customers only start eating.
         processPayments(customersWithStatus(CustomerStatus.READY_TO_PAY));
         processEatingCustomers(customersWithStatus(CustomerStatus.EATING));
         processJustServedCustomers(customersWithStatus(CustomerStatus.JUST_SERVED));

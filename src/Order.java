@@ -35,6 +35,9 @@ public class Order {
         return completedUnits;
     }
 
+    /**
+     * Checks preparation eligibility without advancing any preparation units.
+     */
     public ActionResult checkPreparation() {
         if (status == OrderStatus.CANCELLED) {
             return ActionResult.ORDER_CANCELLED;

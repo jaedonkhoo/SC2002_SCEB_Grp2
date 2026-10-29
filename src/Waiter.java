@@ -26,6 +26,7 @@ public class Waiter {
             return result;
         }
 
+        // Successful table seating already established that the customer is WAITING.
         customer.markSeated();
         acted = true;
         return ActionResult.SUCCESS;
@@ -48,6 +49,7 @@ public class Waiter {
         return ActionResult.SUCCESS;
     }
 
+    // Checks serving eligibility without serving food or using the Waiter's task.
     public ActionResult checkServeOrder(Customer customer) {
         if (hasActed()) {
             return ActionResult.WAITER_ALREADY_ACTED;
@@ -75,6 +77,7 @@ public class Waiter {
             return result;
         }
 
+        // The successful check establishes the prerequisites for both transitions.
         customer.getOrder().markServed();
         customer.markJustServed();
         acted = true;

@@ -30,11 +30,15 @@ public abstract class Customer {
     public abstract int getSatisfactionLoss();
 
     public void applyWaitingPenalty() {
+        // Even a READY dish still counts as waiting for food until the customer is served.
         if (status == CustomerStatus.WAITING || status == CustomerStatus.SEATED) {
             satisfaction = Math.max(0, satisfaction - getSatisfactionLoss());
         }
     }
 
+    /**
+     * Checks customer eligibility without assigning an order or changing the customer's state.
+     */
     public ActionResult checkOrderPlacement() {
         if (status != CustomerStatus.SEATED) {
             return ActionResult.CUSTOMER_NOT_SEATED;

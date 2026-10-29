@@ -29,6 +29,7 @@ public class GameCLI {
         do {
             controller.startTurn();
             displayGameStatus();
+            // Keeping this order prevents serving a dish that the Chef finishes this turn.
             waiterInput();
             chefInput();
             int completedTurn = controller.getGameState().getCurrentTurn();
@@ -257,6 +258,7 @@ public class GameCLI {
     }
 
     private void chefInput() {
+        // Query after the Waiter acts so an order taken this turn is immediately eligible.
         List<Customer> toPrepare = controller.getCustomersToPrepare();
         if (toPrepare.isEmpty()) {
             System.out.println("\nChef: no orders need preparation; waiting automatically.");

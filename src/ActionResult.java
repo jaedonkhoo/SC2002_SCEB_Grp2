@@ -1,3 +1,6 @@
+/**
+ * Outcome of an action or a read-only eligibility check. The CLI supplies the display message.
+ */
 public enum ActionResult {
     SUCCESS,
     CUSTOMER_NOT_FOUND,

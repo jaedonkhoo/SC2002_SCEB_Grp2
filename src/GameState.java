@@ -31,6 +31,7 @@ public class GameState {
     }
 
     public List<Customer> getWaitingCustomers() {
+        // Returns an unmodifiable list view, the customer objects themselves remain mutable.
         return Collections.unmodifiableList(waitingCustomers);
     }
 
@@ -67,6 +68,7 @@ public class GameState {
         if (paidCustomerCount > 0) {
             return (double) totalPaidSatisfaction / paidCustomerCount;
         }
+        // No payment average exists yet; the CLI displays this sentinel as N/A.
         return -1;
     }
 
@@ -126,10 +128,14 @@ public class GameState {
         return null;
     }
 
+    /**
+     * Records a customer's bill and payment-time satisfaction at most once per customer ID.
+     */
     public boolean recordPayment(Customer customer) {
         if (customer == null || customer.getStatus() != CustomerStatus.PAID) {
             return false;
         }
+        // Set.add returns false for an existing ID; its size also supplies the paid count.
         if (!recordedPaymentCustomerIds.add(customer.getId())) {
             return false;
         }
