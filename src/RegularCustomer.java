@@ -4,6 +4,11 @@ public class RegularCustomer extends Customer {
     }
 
     @Override
+    public String getCustomerType() {
+        return "Regular";
+    }
+
+    @Override
     public int getSatisfactionLoss() {
         return 8;
     }

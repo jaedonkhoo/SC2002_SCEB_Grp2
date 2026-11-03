@@ -86,9 +86,26 @@ public class GameController {
 
     private void handleCustomerArrival() {
         int index = GameConfig.ARRIVAL_TURNS.indexOf(gameState.getCurrentTurn());
-        if (index != -1) {
-            gameState.addCustomer(new RegularCustomer(index + 1));
+
+        if (index == -1) {
+            return;
         }
+
+        int customerId = index + 1;
+        Customer customer;
+
+        switch (customerId) {
+            case 3:
+                customer = new VIPCustomer(customerId);
+                break;
+            case 5:
+                customer = new CriticCustomer(customerId);
+                break;
+            default:
+                customer = new RegularCustomer(customerId);
+        }
+
+        gameState.addCustomer(customer);
     }
 
     public ActionResult seatCustomer(int customerId, int tableId) {
@@ -114,9 +131,9 @@ public class GameController {
             return ActionResult.CUSTOMER_NOT_FOUND;
         }
 
-        // Arrival IDs give a reproducible Salad -> Burger -> Pasta cycle.
-        MenuItem item = menu.get((customerId - 1) % menu.size());
-        Order order = new Order(item, item.getPriceCents());
+        MenuItem item = customer.chooseMenuItem(menu);
+        int price = customer.calculatePriceCents(item.getPriceCents());
+        Order order = new Order(item, price);
         return waiter.takeOrder(customer, order);
     }
 

@@ -68,7 +68,7 @@ public class GameState {
         if (paidCustomerCount > 0) {
             return (double) totalPaidSatisfaction / paidCustomerCount;
         }
-        // No payment average exists yet; the CLI displays this sentinel as N/A.
+        // No payment average exists yet; the CLI displays this as N/A.
         return -1;
     }
 
@@ -128,9 +128,7 @@ public class GameState {
         return null;
     }
 
-    /**
-     * Records a customer's bill and payment-time satisfaction at most once per customer ID.
-     */
+    // Records a customer's bill and payment-time satisfaction at most once per customer ID.
     public boolean recordPayment(Customer customer) {
         if (customer == null || customer.getStatus() != CustomerStatus.PAID) {
             return false;

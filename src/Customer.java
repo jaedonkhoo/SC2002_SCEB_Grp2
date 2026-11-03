@@ -1,3 +1,5 @@
+import java.util.List;
+
 public abstract class Customer {
     private final int id;
     private int satisfaction;
@@ -27,6 +29,8 @@ public abstract class Customer {
         return order;
     }
 
+    public abstract String getCustomerType();
+
     public abstract int getSatisfactionLoss();
 
     public void applyWaitingPenalty() {
@@ -36,9 +40,16 @@ public abstract class Customer {
         }
     }
 
-    /**
-     * Checks customer eligibility without assigning an order or changing the customer's state.
-     */
+    public MenuItem chooseMenuItem(List<MenuItem> menu) {
+        // Arrival IDs give a reproducible Salad -> Burger -> Pasta cycle.
+        return menu.get((id - 1) % menu.size());
+    }
+
+    public int calculatePriceCents(int basePriceCents) {
+        return basePriceCents;
+    }
+
+    // Checks customer eligibility without assigning an order or changing the customer's state.
     public ActionResult checkOrderPlacement() {
         if (status != CustomerStatus.SEATED) {
             return ActionResult.CUSTOMER_NOT_SEATED;

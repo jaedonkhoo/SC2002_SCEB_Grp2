@@ -1,14 +1,25 @@
+
 import java.util.List;
 import java.util.Scanner;
 import java.util.StringJoiner;
 
 public class GameCLI {
+    private static final int DISPLAY_WIDTH = 65;
+
     private final GameController controller;
     private final Scanner scanner;
 
     public GameCLI() {
         this.controller = new GameController();
         this.scanner = new Scanner(System.in);
+    }
+
+    // Centers headings using the same width as the customer table.
+    private void displayBanner(String title) {
+        int remaining = DISPLAY_WIDTH - title.length();
+        int left = remaining / 2;
+        int right = remaining - left;
+        System.out.println("=".repeat(left) + title + "=".repeat(right));
     }
 
     private int readInt(String prompt) {
@@ -29,26 +40,31 @@ public class GameCLI {
         do {
             controller.startTurn();
             displayGameStatus();
+
             // Keeping this order prevents serving a dish that the Chef finishes this turn.
             waiterInput();
             chefInput();
+
             int completedTurn = controller.getGameState().getCurrentTurn();
             moreTurns = controller.endTurn();
             displayTurnSummary(completedTurn);
         } while (moreTurns);
+
         displayFinalResult();
     }
 
     private void displayGameStatus() {
         GameState state = controller.getGameState();
 
-        System.out.printf("%n====================== TURN %d / %d ======================%n",
-                state.getCurrentTurn(), GameConfig.MAX_TURNS);
+        System.out.println();
+        displayBanner(" TURN " + state.getCurrentTurn() + " / " + GameConfig.MAX_TURNS + " ");
+        System.out.println();
 
         System.out.printf("Revenue: $%.2f | Paid-customer satisfaction: %s%n",
                 state.getRevenueCents() / 100.0, averageSatisfactionText(state));
         System.out.printf("Served: %d | Paid: %d | Unhappy departures: %d%n",
-                state.getServedCount(), state.getPaidCustomerCount(), state.getUnhappyDepartures());
+                state.getServedCount(), state.getPaidCustomerCount(),
+                state.getUnhappyDepartures());
 
         displayWaitingQueue(state);
         displayTables(state);
@@ -63,11 +79,13 @@ public class GameCLI {
 
     private void displayTables(GameState state) {
         StringJoiner tables = new StringJoiner(" | ");
+
         for (Table table : state.getTables()) {
             Customer occupant = table.getOccupant();
             tables.add("Table " + table.getId() + ": "
                     + (occupant == null ? "Empty" : "Customer " + occupant.getId()));
         }
+
         System.out.println(tables);
     }
 
@@ -79,13 +97,19 @@ public class GameCLI {
             return;
         }
 
-        System.out.printf("%-8s %-14s %5s %-9s %-10s %5s%n",
-                "ID", "State", "Sat.", "Food", "Order", "Prep");
-        System.out.println("--------------------------------------------------------");
+        System.out.printf("%-8s %-8s %-14s %5s %-9s %-10s %5s%n",
+                "ID", "Type", "State", "Sat.", "Food", "Order", "Prep");
+
+        System.out.println("-".repeat(DISPLAY_WIDTH));
+
         for (Customer customer : state.getCustomers()) {
             Order order = customer.getOrder();
-            System.out.printf("%-8d %-14s %5d %-9s %-10s %5s%n",
-                    customer.getId(), customer.getStatus(), customer.getSatisfaction(),
+
+            System.out.printf("%-8d %-8s %-14s %5d %-9s %-10s %5s%n",
+                    customer.getId(),
+                    customer.getCustomerType(),
+                    customer.getStatus(),
+                    customer.getSatisfaction(),
                     order == null ? "-" : order.getMenuItem().getName(),
                     order == null ? "-" : order.getOrderStatus(),
                     order == null ? "-" : preparationText(order));
@@ -94,22 +118,27 @@ public class GameCLI {
 
     private String customerIds(List<Customer> customers) {
         StringJoiner ids = new StringJoiner(", ");
+
         for (Customer customer : customers) {
             ids.add(Integer.toString(customer.getId()));
         }
+
         return customers.isEmpty() ? "None" : ids.toString();
     }
 
     private String freeTableIds() {
         StringJoiner ids = new StringJoiner(", ");
+
         for (Table table : controller.getFreeTables()) {
             ids.add(Integer.toString(table.getId()));
         }
+
         return ids.toString();
     }
 
     private String preparationText(Order order) {
-        return order.getCompletedUnits() + "/" + order.getMenuItem().getPreparationUnits();
+        return order.getCompletedUnits() + "/"
+                + order.getMenuItem().getPreparationUnits();
     }
 
     private String averageSatisfactionText(GameState state) {
@@ -119,17 +148,25 @@ public class GameCLI {
 
     private void displayTurnSummary(int completedTurn) {
         GameState state = controller.getGameState();
+
         System.out.printf("%nEnd of turn %d | Served: %d | Paid: %d | Unhappy departures: %d%n",
-                completedTurn, state.getServedCount(), state.getPaidCustomerCount(),
+                completedTurn,
+                state.getServedCount(),
+                state.getPaidCustomerCount(),
                 state.getUnhappyDepartures());
+
         System.out.printf("Revenue: $%.2f | Paid-customer satisfaction: %s%n",
-                state.getRevenueCents() / 100.0, averageSatisfactionText(state));
+                state.getRevenueCents() / 100.0,
+                averageSatisfactionText(state));
+
+        System.out.println();
     }
 
     private void waiterInput() {
         List<Customer> toSeat = controller.getCustomersToSeat();
         List<Customer> toOrder = controller.getCustomersToOrder();
         List<Customer> toServe = controller.getCustomersToServe();
+
         if (toSeat.isEmpty() && toOrder.isEmpty() && toServe.isEmpty()) {
             System.out.println("\nWaiter: no available tasks; waiting automatically.");
             return;
@@ -138,6 +175,7 @@ public class GameCLI {
         while (true) {
             displayWaiterMenu(toSeat, toOrder, toServe);
             int choice = readInt("Choose an action: ");
+
             switch (choice) {
                 case 1:
                     if (toSeat.isEmpty()) {
@@ -145,46 +183,66 @@ public class GameCLI {
                                 "Seating is unavailable: it requires a waiting customer and a free table.");
                         break;
                     }
+
                     System.out.println("Free table IDs: " + freeTableIds());
                     int seatingCustomerId = readInt("Input Customer ID: ");
                     int tableId = readInt("Input Table ID: ");
+
                     ActionResult seatResult = controller.seatCustomer(seatingCustomerId, tableId);
+
                     if (seatResult == ActionResult.SUCCESS) {
                         System.out.println("Customer seated successfully!");
                         return;
                     }
+
                     displayActionFailure(seatResult);
                     break;
 
                 case 2:
                     if (toOrder.isEmpty()) {
-                        System.out.println("Taking orders is unavailable: no seated customer needs an order.");
+                        System.out.println(
+                                "Taking orders is unavailable: no seated customer needs an order.");
                         break;
                     }
+
                     int orderingCustomerId = readInt("Input Customer ID: ");
                     ActionResult orderResult = controller.takeOrder(orderingCustomerId);
+
                     if (orderResult == ActionResult.SUCCESS) {
                         System.out.println("Order taken successfully!");
-                        Customer customer = controller.getGameState().findCustomerById(orderingCustomerId);
+
+                        Customer customer = controller.getGameState()
+                                .findCustomerById(orderingCustomerId);
                         Order order = customer.getOrder();
-                        System.out.println("Customer " + orderingCustomerId + " ordered: "
-                                + order.getMenuItem().getName());
+
+                        System.out.printf(
+                                "Customer %d (%s) ordered %s for $%.2f%n",
+                                customer.getId(),
+                                customer.getCustomerType(),
+                                order.getMenuItem().getName(),
+                                order.getFinalPriceCents() / 100.0
+                        );
                         return;
                     }
+
                     displayActionFailure(orderResult);
                     break;
 
                 case 3:
                     if (toServe.isEmpty()) {
-                        System.out.println("Serving is unavailable: no seated customer has a ready order.");
+                        System.out.println(
+                                "Serving is unavailable: no seated customer has a ready order.");
                         break;
                     }
+
                     int servingCustomerId = readInt("Input customer ID: ");
                     ActionResult serveResult = controller.serveOrder(servingCustomerId);
+
                     if (serveResult == ActionResult.SUCCESS) {
                         System.out.println("Order served successfully!");
                         return;
                     }
+
                     displayActionFailure(serveResult);
                     break;
 
@@ -203,63 +261,90 @@ public class GameCLI {
         switch (result) {
             case SUCCESS:
                 break;
+
             case CUSTOMER_NOT_FOUND:
                 System.out.println("Customer ID not found.");
                 break;
+
             case TABLE_NOT_FOUND:
                 System.out.println("Table ID not found.");
                 break;
+
             case CUSTOMER_NOT_WAITING:
                 System.out.println("This customer is no longer waiting.");
                 break;
+
             case CUSTOMER_NOT_SEATED:
-                System.out.println("This action requires a seated customer who has not yet been served.");
+                System.out.println(
+                        "This action requires a seated customer who has not yet been served.");
                 break;
+
             case TABLE_OCCUPIED:
                 System.out.println("This table is occupied.");
                 break;
+
             case WAITER_ALREADY_ACTED:
                 System.out.println("The Waiter has already acted this turn.");
                 break;
+
             case CHEF_ALREADY_ACTED:
                 System.out.println("The Chef has already acted this turn.");
                 break;
+
             case ORDER_ALREADY_EXISTS:
                 System.out.println("This customer already has an order.");
                 break;
+
             case ORDER_NOT_FOUND:
                 System.out.println("No order was found.");
                 break;
+
             case ORDER_NOT_PLACED:
-                System.out.println("This order is no longer new and cannot be assigned to a customer.");
+                System.out.println(
+                        "This order is no longer new and cannot be assigned to a customer.");
                 break;
+
             case ORDER_NOT_READY:
                 System.out.println("This order is not ready to serve.");
                 break;
+
             case ORDER_ALREADY_PREPARED:
                 System.out.println("This order is already fully prepared.");
                 break;
+
             case ORDER_CANCELLED:
                 System.out.println("This order was cancelled and cannot be prepared.");
                 break;
         }
     }
 
-    private void displayWaiterMenu(List<Customer> toSeat, List<Customer> toOrder,
-            List<Customer> toServe) {
+    private void displayWaiterMenu(List<Customer> toSeat,
+                                   List<Customer> toOrder,
+                                   List<Customer> toServe) {
         System.out.println("\n--- Waiter: choose one task ---");
+
         System.out.println("1. Seat customer  "
-                + (toSeat.isEmpty() ? "[unavailable]" : "(customer IDs: " + customerIds(toSeat) + ")"));
+                + (toSeat.isEmpty()
+                        ? "[unavailable]"
+                        : "(customer IDs: " + customerIds(toSeat) + ")"));
+
         System.out.println("2. Take order     "
-                + (toOrder.isEmpty() ? "[unavailable]" : "(customer IDs: " + customerIds(toOrder) + ")"));
+                + (toOrder.isEmpty()
+                        ? "[unavailable]"
+                        : "(customer IDs: " + customerIds(toOrder) + ")"));
+
         System.out.println("3. Serve order    "
-                + (toServe.isEmpty() ? "[unavailable]" : "(customer IDs: " + customerIds(toServe) + ")"));
+                + (toServe.isEmpty()
+                        ? "[unavailable]"
+                        : "(customer IDs: " + customerIds(toServe) + ")"));
+
         System.out.println("0. Wait");
     }
 
     private void chefInput() {
         // Query after the Waiter acts so an order taken this turn is immediately eligible.
         List<Customer> toPrepare = controller.getCustomersToPrepare();
+
         if (toPrepare.isEmpty()) {
             System.out.println("\nChef: no orders need preparation; waiting automatically.");
             return;
@@ -268,17 +353,26 @@ public class GameCLI {
         while (true) {
             displayChefMenu(toPrepare);
             int choice = readInt("Choose an action: ");
+
             switch (choice) {
                 case 1:
                     int customerId = readInt("Input Customer ID: ");
                     ActionResult result = controller.prepareOrder(customerId);
+
                     if (result == ActionResult.SUCCESS) {
-                        Order order = controller.getGameState().findCustomerById(customerId).getOrder();
-                        System.out.printf("Customer %d: %s preparation %s (%s).%n",
-                                customerId, order.getMenuItem().getName(), preparationText(order),
-                                order.getOrderStatus());
+                        Order order = controller.getGameState()
+                                .findCustomerById(customerId).getOrder();
+
+                        System.out.printf(
+                                "Customer %d: %s preparation %s (%s).%n",
+                                customerId,
+                                order.getMenuItem().getName(),
+                                preparationText(order),
+                                order.getOrderStatus()
+                        );
                         return;
                     }
+
                     displayActionFailure(result);
                     break;
 
@@ -295,11 +389,16 @@ public class GameCLI {
 
     private void displayChefMenu(List<Customer> toPrepare) {
         System.out.println("\n--- Chef: orders needing preparation ---");
+
         for (Customer customer : toPrepare) {
             Order order = customer.getOrder();
+
             System.out.printf("Customer %d | %-9s | Prep %s%n",
-                    customer.getId(), order.getMenuItem().getName(), preparationText(order));
+                    customer.getId(),
+                    order.getMenuItem().getName(),
+                    preparationText(order));
         }
+
         System.out.println("1. Prepare Order");
         System.out.println("0. Wait");
     }
@@ -307,7 +406,8 @@ public class GameCLI {
     private void displayFinalResult() {
         GameState state = controller.getGameState();
 
-        System.out.println("\n========== GAME OVER ==========");
+        System.out.println();
+        displayBanner(" GAME OVER ");
 
         if (controller.hasWon()) {
             System.out.println("RESULT: VICTORY!");
@@ -316,8 +416,10 @@ public class GameCLI {
         }
 
         System.out.println("\nFinal Statistics:");
+
         System.out.printf("Turns Played: %d / %d%n",
-                state.getCurrentTurn(), GameConfig.MAX_TURNS);
+                state.getCurrentTurn(),
+                GameConfig.MAX_TURNS);
 
         System.out.println("Customers Served: " + state.getServedCount());
         System.out.println("Customers Paid: " + state.getPaidCustomerCount());
@@ -334,6 +436,6 @@ public class GameCLI {
             System.out.printf("Average Satisfaction: %.1f%n", average);
         }
 
-        System.out.println("===============================");
+        System.out.println("=".repeat(DISPLAY_WIDTH));
     }
 }
