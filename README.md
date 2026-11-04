@@ -120,7 +120,7 @@ will become available once the `stage-3` tag is published.
 
 **Regression:** Earlier customer behaviour, order preparation, payment timing and victory conditions remain intact. The Stage 3 victory and defeat runs both complete all 18 turns.
 
-**Compare:** [stage-2 → stage-3](https://github.com/jaedonkhoo/SC2002_SCEB_Grp2/compare/stage-2...stage-3) (available once the `stage-3` tag is published).
+**Compare:** [stage-2 → stage-3](https://github.com/jaedonkhoo/SC2002_SCEB_Grp2/compare/stage-2...stage-3).
 
 ## AI Assistance History
 
