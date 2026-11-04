@@ -1,40 +1,7 @@
-public class Waiter {
-    private boolean acted;
-
-    public Waiter() {
-        this.acted = false;
-    }
-
-    public boolean hasActed() {
-        return acted;
-    }
-
-    public void resetForNewTurn() {
-        acted = false;
-    }
-
-    public ActionResult seatCustomer(Customer customer, Table table) {
-        if (hasActed()) {
-            return ActionResult.WAITER_ALREADY_ACTED;
-        }
-        if (table == null) {
-            return ActionResult.TABLE_NOT_FOUND;
-        }
-
-        ActionResult result = table.seatCustomer(customer);
-        if (result != ActionResult.SUCCESS) {
-            return result;
-        }
-
-        // Successful table seating already established that the customer is WAITING.
-        customer.markSeated();
-        acted = true;
-        return ActionResult.SUCCESS;
-    }
-
+public class Waiter extends SeatingStaff {
     public ActionResult takeOrder(Customer customer, Order order) {
         if (hasActed()) {
-            return ActionResult.WAITER_ALREADY_ACTED;
+            return alreadyActedResult();
         }
         if (customer == null) {
             return ActionResult.CUSTOMER_NOT_FOUND;
@@ -45,14 +12,14 @@ public class Waiter {
             return result;
         }
 
-        acted = true;
+        markActed();
         return ActionResult.SUCCESS;
     }
 
     // Checks serving eligibility without serving food or using the Waiter's task.
     public ActionResult checkServeOrder(Customer customer) {
         if (hasActed()) {
-            return ActionResult.WAITER_ALREADY_ACTED;
+            return alreadyActedResult();
         }
         if (customer == null) {
             return ActionResult.CUSTOMER_NOT_FOUND;
@@ -80,7 +47,12 @@ public class Waiter {
         // The successful check establishes the prerequisites for both transitions.
         customer.getOrder().markServed();
         customer.markJustServed();
-        acted = true;
+        markActed();
         return ActionResult.SUCCESS;
+    }
+
+    @Override
+    protected ActionResult alreadyActedResult() {
+        return ActionResult.WAITER_ALREADY_ACTED;
     }
 }

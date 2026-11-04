@@ -1,18 +1,4 @@
-public class Chef {
-    private boolean acted;
-
-    public Chef() {
-        this.acted = false;
-    }
-
-    public boolean hasActed() {
-        return acted;
-    }
-
-    public void resetForNewTurn() {
-        acted = false;
-    }
-
+public class Chef extends ControllableStaff {
     public ActionResult prepareOrder(Order order) {
         if (hasActed()) {
             return ActionResult.CHEF_ALREADY_ACTED;
@@ -26,7 +12,12 @@ public class Chef {
             return result;
         }
 
-        acted = true;
+        markActed();
         return ActionResult.SUCCESS;
+    }
+
+    @Override
+    protected ActionResult alreadyActedResult() {
+        return ActionResult.CHEF_ALREADY_ACTED;
     }
 }

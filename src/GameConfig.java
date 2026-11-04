@@ -11,4 +11,18 @@ public final class GameConfig {
 
     private GameConfig() {
     }
+
+    public static List<MenuItem> createStartingMenu() {
+        MenuItem salad = new MenuItem("Salad", 900, 1);
+        MenuItem burger = new MenuItem("Burger", 1500, 1);
+        MenuItem pasta = new MenuItem("Pasta", 1800, 2);
+
+        return List.of(
+                salad,
+                burger,
+                pasta,
+                new ComboMeal(salad, burger),
+                new ComboMeal(burger, pasta),
+                new ComboMeal(salad, pasta));
+    }
 }

@@ -14,6 +14,7 @@ public class GameState {
     private int totalPaidSatisfaction;
     private int servedCount;
     private int unhappyDepartures;
+    private int happyHourStartTurn;
 
     public GameState() {
         this.currentTurn = 1;
@@ -28,6 +29,7 @@ public class GameState {
         this.totalPaidSatisfaction = 0;
         this.servedCount = 0;
         this.unhappyDepartures = 0;
+        this.happyHourStartTurn = 0;
     }
 
     public List<Customer> getWaitingCustomers() {
@@ -126,6 +128,27 @@ public class GameState {
             }
         }
         return null;
+    }
+
+    public boolean hasUsedHappyHour() {
+        return happyHourStartTurn != 0;
+    }
+
+    public boolean activateHappyHour() {
+        if (hasUsedHappyHour()) {
+            return false;
+        }
+
+        happyHourStartTurn = currentTurn;
+        return true;
+    }
+
+    public int getHappyHourTurnsRemaining() {
+        if (!hasUsedHappyHour()) {
+            return 0;
+        }
+
+        return Math.max(0, happyHourStartTurn + 2 - currentTurn);
     }
 
     // Records a customer's bill and payment-time satisfaction at most once per customer ID.

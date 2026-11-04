@@ -33,6 +33,15 @@ public abstract class Customer {
 
     public abstract int getSatisfactionLoss();
 
+    public void increaseSatisfaction(int amount) {
+        if (amount < 0) {
+            throw new IllegalArgumentException("Satisfaction increase cannot be negative.");
+        }
+
+        int increase = Math.min(amount, 100 - satisfaction);
+        satisfaction += increase;
+    }
+
     public void applyWaitingPenalty() {
         // Even a READY dish still counts as waiting for food until the customer is served.
         if (status == CustomerStatus.WAITING || status == CustomerStatus.SEATED) {
@@ -41,7 +50,6 @@ public abstract class Customer {
     }
 
     public MenuItem chooseMenuItem(List<MenuItem> menu) {
-        // Arrival IDs give a reproducible Salad -> Burger -> Pasta cycle.
         return menu.get((id - 1) % menu.size());
     }
 

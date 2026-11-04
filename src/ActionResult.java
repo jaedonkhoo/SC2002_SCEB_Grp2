@@ -1,6 +1,4 @@
-/**
- * Outcome of an action or a read-only eligibility check. The CLI supplies the display message.
- */
+// Outcome of an action or a read-only eligibility check. The CLI supplies the display message.
 public enum ActionResult {
     SUCCESS,
     CUSTOMER_NOT_FOUND,
@@ -9,7 +7,9 @@ public enum ActionResult {
     CUSTOMER_NOT_SEATED,
     TABLE_OCCUPIED,
     WAITER_ALREADY_ACTED,
+    WAITER_NOT_FINISHED,
     CHEF_ALREADY_ACTED,
+    HOST_ALREADY_ACTED,
     ORDER_ALREADY_EXISTS,
     ORDER_NOT_FOUND,
     ORDER_NOT_PLACED,
