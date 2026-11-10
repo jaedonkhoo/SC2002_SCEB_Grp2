@@ -1,0 +1,611 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxfile host="app.diagrams.net" pages="1">
+  <diagram id="turn7-guards" name="Turn 7 - complete sequence with decisions">
+    <mxGraphModel grid="1" gridSize="10" page="1" pageScale="1" pageWidth="2300" pageHeight="4523" background="#ffffff">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="p1-1" value="Restaurant Rush | Stage 3 | Turn 7 — VIP arrival, seating, discounted ordering and first preparation" style="rounded=0;whiteSpace=wrap;html=0;fillColor=#e8eef7;strokeColor=#bcc7d6;fontColor=#172b4d;fontSize=26;fontFamily=Arial;align=left;spacingLeft=10;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="30" y="20" width="2240" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="p1-2" value="Use case: seat VIP customer 3, take the Pasta order and prepare its first unit during Happy Hour.&#10;Starting conditions: currentTurn = 7; this turn has not started; table 1 is free; Happy Hour is unused. Player selects Yes, then Host → Waiter → Chef.&#10;Scope: customer 3; routine UI queries, getters and nonessential validation are omitted. Other customers may interact during this turn." style="rounded=0;whiteSpace=wrap;html=0;fillColor=#f5f7fa;strokeColor=#bcc7d6;fontColor=#172b4d;fontSize=17;fontFamily=Arial;align=left;spacingLeft=10;fontStyle=0;" parent="1" vertex="1">
+          <mxGeometry x="30" y="80" width="2240" height="88" as="geometry" />
+        </mxCell>
+        <mxCell id="p1-3" value="" style="endArrow=none;dashed=1;html=0;rounded=0;strokeWidth=1.3;strokeColor=#344054;fontColor=#172b4d;fontSize=15;fontFamily=Arial;labelBackgroundColor=#ffffff;verticalAlign=bottom;spacingBottom=4;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="135" y="224" as="sourcePoint" />
+            <mxPoint x="135" y="4413" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="p1-4" value="cli:GameCLI" style="rounded=0;whiteSpace=wrap;html=0;fillColor=#e8eef7;strokeColor=#bcc7d6;fontColor=#172b4d;fontSize=14;fontFamily=Arial;align=left;spacingLeft=10;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="47" y="190" width="176" height="34" as="geometry" />
+        </mxCell>
+        <mxCell id="p1-5" value="" style="endArrow=none;dashed=1;html=0;rounded=0;strokeWidth=1.3;strokeColor=#344054;fontColor=#172b4d;fontSize=15;fontFamily=Arial;labelBackgroundColor=#ffffff;verticalAlign=bottom;spacingBottom=4;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="387" y="224" as="sourcePoint" />
+            <mxPoint x="387" y="4413" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="p1-6" value="controller:GameController" style="rounded=0;whiteSpace=wrap;html=0;fillColor=#e8eef7;strokeColor=#bcc7d6;fontColor=#172b4d;fontSize=14;fontFamily=Arial;align=left;spacingLeft=10;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="299" y="190" width="176" height="34" as="geometry" />
+        </mxCell>
+        <mxCell id="p1-7" value="" style="endArrow=none;dashed=1;html=0;rounded=0;strokeWidth=1.3;strokeColor=#344054;fontColor=#172b4d;fontSize=15;fontFamily=Arial;labelBackgroundColor=#ffffff;verticalAlign=bottom;spacingBottom=4;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="639" y="224" as="sourcePoint" />
+            <mxPoint x="639" y="4413" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="p1-8" value="gameState:GameState" style="rounded=0;whiteSpace=wrap;html=0;fillColor=#e8eef7;strokeColor=#bcc7d6;fontColor=#172b4d;fontSize=14;fontFamily=Arial;align=left;spacingLeft=10;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="551" y="190" width="176" height="34" as="geometry" />
+        </mxCell>
+        <mxCell id="p1-9" value="" style="endArrow=none;dashed=1;html=0;rounded=0;strokeWidth=1.3;strokeColor=#344054;fontColor=#172b4d;fontSize=15;fontFamily=Arial;labelBackgroundColor=#ffffff;verticalAlign=bottom;spacingBottom=4;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="891" y="224" as="sourcePoint" />
+            <mxPoint x="891" y="4413" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="p1-10" value="host:Host" style="rounded=0;whiteSpace=wrap;html=0;fillColor=#e8eef7;strokeColor=#bcc7d6;fontColor=#172b4d;fontSize=14;fontFamily=Arial;align=left;spacingLeft=10;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="803" y="190" width="176" height="34" as="geometry" />
+        </mxCell>
+        <mxCell id="p1-11" value="" style="endArrow=none;dashed=1;html=0;rounded=0;strokeWidth=1.3;strokeColor=#344054;fontColor=#172b4d;fontSize=15;fontFamily=Arial;labelBackgroundColor=#ffffff;verticalAlign=bottom;spacingBottom=4;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1143" y="224" as="sourcePoint" />
+            <mxPoint x="1143" y="4413" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="p1-12" value="table1:Table" style="rounded=0;whiteSpace=wrap;html=0;fillColor=#e8eef7;strokeColor=#bcc7d6;fontColor=#172b4d;fontSize=14;fontFamily=Arial;align=left;spacingLeft=10;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="1055" y="190" width="176" height="34" as="geometry" />
+        </mxCell>
+        <mxCell id="p1-13" value="" style="endArrow=none;dashed=1;html=0;rounded=0;strokeWidth=1.3;strokeColor=#344054;fontColor=#172b4d;fontSize=15;fontFamily=Arial;labelBackgroundColor=#ffffff;verticalAlign=bottom;spacingBottom=4;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1647" y="224" as="sourcePoint" />
+            <mxPoint x="1647" y="4413" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="p1-14" value="waiter:Waiter" style="rounded=0;whiteSpace=wrap;html=0;fillColor=#e8eef7;strokeColor=#bcc7d6;fontColor=#172b4d;fontSize=14;fontFamily=Arial;align=left;spacingLeft=10;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="1559" y="190" width="176" height="34" as="geometry" />
+        </mxCell>
+        <mxCell id="p1-15" value="" style="endArrow=none;dashed=1;html=0;rounded=0;strokeWidth=1.3;strokeColor=#344054;fontColor=#172b4d;fontSize=15;fontFamily=Arial;labelBackgroundColor=#ffffff;verticalAlign=bottom;spacingBottom=4;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="2151" y="224" as="sourcePoint" />
+            <mxPoint x="2151" y="4413" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="p1-16" value="chef:Chef" style="rounded=0;whiteSpace=wrap;html=0;fillColor=#e8eef7;strokeColor=#bcc7d6;fontColor=#172b4d;fontSize=14;fontFamily=Arial;align=left;spacingLeft=10;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="2063" y="190" width="176" height="34" as="geometry" />
+        </mxCell>
+        <mxCell id="p1-17" value="1. Arrival and Happy Hour" style="rounded=0;whiteSpace=wrap;html=0;fillColor=#fff8e6;strokeColor=#bcc7d6;fontColor=#172b4d;fontSize=17;fontFamily=Arial;align=left;spacingLeft=10;fontStyle=0;" parent="1" vertex="1">
+          <mxGeometry x="30" y="245" width="2240" height="62" as="geometry" />
+        </mxCell>
+        <mxCell id="p1-18" value="startTurn(true)" style="endArrow=block;endFill=1;dashed=0;html=0;rounded=0;strokeWidth=1.3;strokeColor=#344054;fontColor=#172b4d;fontSize=15;fontFamily=Arial;labelBackgroundColor=#ffffff;verticalAlign=bottom;spacingBottom=4;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="135" y="329" as="sourcePoint" />
+            <mxPoint x="387" y="329" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="p1-19" value="«create» VIPCustomer(3)" style="endArrow=open;endFill=0;dashed=1;html=0;rounded=0;strokeWidth=1.3;strokeColor=#344054;fontColor=#172b4d;fontSize=15;fontFamily=Arial;labelBackgroundColor=#ffffff;verticalAlign=bottom;spacingBottom=4;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="387" y="363" as="sourcePoint" />
+            <mxPoint x="1307" y="363" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="p1-20" value="" style="endArrow=none;dashed=1;html=0;rounded=0;strokeWidth=1.3;strokeColor=#344054;fontColor=#172b4d;fontSize=15;fontFamily=Arial;labelBackgroundColor=#ffffff;verticalAlign=bottom;spacingBottom=4;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1395" y="380" as="sourcePoint" />
+            <mxPoint x="1395" y="4413" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="p1-21" value="customer3:VIPCustomer" style="rounded=0;whiteSpace=wrap;html=0;fillColor=#e8eef7;strokeColor=#bcc7d6;fontColor=#172b4d;fontSize=14;fontFamily=Arial;align=left;spacingLeft=10;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="1307" y="346" width="176" height="34" as="geometry" />
+        </mxCell>
+        <mxCell id="p1-22" value="New customer: id = 3, status = WAITING, satisfaction = 100, order = null. Arrival is processed before Happy Hour bonuses." style="rounded=0;whiteSpace=wrap;html=0;fillColor=#fff8e6;strokeColor=#bcc7d6;fontColor=#172b4d;fontSize=17;fontFamily=Arial;align=left;spacingLeft=10;fontStyle=0;" parent="1" vertex="1">
+          <mxGeometry x="30" y="408" width="2240" height="62" as="geometry" />
+        </mxCell>
+        <mxCell id="p1-23" value="addCustomer(customer3)" style="endArrow=block;endFill=1;dashed=0;html=0;rounded=0;strokeWidth=1.3;strokeColor=#344054;fontColor=#172b4d;fontSize=15;fontFamily=Arial;labelBackgroundColor=#ffffff;verticalAlign=bottom;spacingBottom=4;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="387" y="492" as="sourcePoint" />
+            <mxPoint x="639" y="492" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="p1-24" value="true" style="endArrow=open;endFill=0;dashed=1;html=0;rounded=0;strokeWidth=1.3;strokeColor=#344054;fontColor=#172b4d;fontSize=15;fontFamily=Arial;labelBackgroundColor=#ffffff;verticalAlign=bottom;spacingBottom=4;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="639" y="526" as="sourcePoint" />
+            <mxPoint x="387" y="526" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="p1-25" value="resetForNewTurn()" style="endArrow=block;endFill=1;dashed=0;html=0;rounded=0;strokeWidth=1.3;strokeColor=#344054;fontColor=#172b4d;fontSize=15;fontFamily=Arial;labelBackgroundColor=#ffffff;verticalAlign=bottom;spacingBottom=4;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="387" y="560" as="sourcePoint" />
+            <mxPoint x="1647" y="560" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="p1-26" value="void" style="endArrow=open;endFill=0;dashed=1;html=0;rounded=0;strokeWidth=1.3;strokeColor=#344054;fontColor=#172b4d;fontSize=15;fontFamily=Arial;labelBackgroundColor=#ffffff;verticalAlign=bottom;spacingBottom=4;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1647" y="594" as="sourcePoint" />
+            <mxPoint x="387" y="594" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="p1-27" value="resetForNewTurn()" style="endArrow=block;endFill=1;dashed=0;html=0;rounded=0;strokeWidth=1.3;strokeColor=#344054;fontColor=#172b4d;fontSize=15;fontFamily=Arial;labelBackgroundColor=#ffffff;verticalAlign=bottom;spacingBottom=4;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="387" y="628" as="sourcePoint" />
+            <mxPoint x="2151" y="628" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="p1-28" value="void" style="endArrow=open;endFill=0;dashed=1;html=0;rounded=0;strokeWidth=1.3;strokeColor=#344054;fontColor=#172b4d;fontSize=15;fontFamily=Arial;labelBackgroundColor=#ffffff;verticalAlign=bottom;spacingBottom=4;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="2151" y="662" as="sourcePoint" />
+            <mxPoint x="387" y="662" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="p1-29" value="resetForNewTurn()" style="endArrow=block;endFill=1;dashed=0;html=0;rounded=0;strokeWidth=1.3;strokeColor=#344054;fontColor=#172b4d;fontSize=15;fontFamily=Arial;labelBackgroundColor=#ffffff;verticalAlign=bottom;spacingBottom=4;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="387" y="696" as="sourcePoint" />
+            <mxPoint x="891" y="696" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="p1-30" value="void" style="endArrow=open;endFill=0;dashed=1;html=0;rounded=0;strokeWidth=1.3;strokeColor=#344054;fontColor=#172b4d;fontSize=15;fontFamily=Arial;labelBackgroundColor=#ffffff;verticalAlign=bottom;spacingBottom=4;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="891" y="730" as="sourcePoint" />
+            <mxPoint x="387" y="730" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="p1-31" value="activateHappyHour()" style="endArrow=block;endFill=1;dashed=0;html=0;rounded=0;strokeWidth=1.3;strokeColor=#344054;fontColor=#172b4d;fontSize=15;fontFamily=Arial;labelBackgroundColor=#ffffff;verticalAlign=bottom;spacingBottom=4;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="387" y="829" as="sourcePoint" />
+            <mxPoint x="639" y="829" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="p1-32" value="true" style="endArrow=open;endFill=0;dashed=1;html=0;rounded=0;strokeWidth=1.3;strokeColor=#344054;fontColor=#172b4d;fontSize=15;fontFamily=Arial;labelBackgroundColor=#ffffff;verticalAlign=bottom;spacingBottom=4;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="639" y="863" as="sourcePoint" />
+            <mxPoint x="387" y="863" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="p1-33" value="" style="fillColor=none;strokeColor=#64748b;strokeWidth=1.5;" parent="1" vertex="1">
+          <mxGeometry x="55" y="764" width="2190" height="139" as="geometry" />
+        </mxCell>
+        <mxCell id="p1-34" value="opt" style="rounded=0;whiteSpace=wrap;html=0;fillColor=#e8eef7;strokeColor=#bcc7d6;fontColor=#172b4d;fontSize=18;fontFamily=Arial;align=left;spacingLeft=10;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="55" y="764" width="90" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="p1-35" value="[activateHappyHour = true] — selected in this use case" style="rounded=0;whiteSpace=wrap;html=0;fillColor=#ffffff;strokeColor=#bcc7d6;fontColor=#172b4d;fontSize=17;fontFamily=Arial;align=left;spacingLeft=10;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="155" y="768" width="1700" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="p1-36" value="getHappyHourTurnsRemaining()" style="endArrow=block;endFill=1;dashed=0;html=0;rounded=0;strokeWidth=1.3;strokeColor=#344054;fontColor=#172b4d;fontSize=15;fontFamily=Arial;labelBackgroundColor=#ffffff;verticalAlign=bottom;spacingBottom=4;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="387" y="933" as="sourcePoint" />
+            <mxPoint x="639" y="933" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="p1-37" value="2" style="endArrow=open;endFill=0;dashed=1;html=0;rounded=0;strokeWidth=1.3;strokeColor=#344054;fontColor=#172b4d;fontSize=15;fontFamily=Arial;labelBackgroundColor=#ffffff;verticalAlign=bottom;spacingBottom=4;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="639" y="967" as="sourcePoint" />
+            <mxPoint x="387" y="967" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="p1-38" value="increaseSatisfaction(15)" style="endArrow=block;endFill=1;dashed=0;html=0;rounded=0;strokeWidth=1.3;strokeColor=#344054;fontColor=#172b4d;fontSize=15;fontFamily=Arial;labelBackgroundColor=#ffffff;verticalAlign=bottom;spacingBottom=4;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="387" y="1066" as="sourcePoint" />
+            <mxPoint x="1395" y="1066" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="p1-39" value="void" style="endArrow=open;endFill=0;dashed=1;html=0;rounded=0;strokeWidth=1.3;strokeColor=#344054;fontColor=#172b4d;fontSize=15;fontFamily=Arial;labelBackgroundColor=#ffffff;verticalAlign=bottom;spacingBottom=4;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1395" y="1100" as="sourcePoint" />
+            <mxPoint x="387" y="1100" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="p1-40" value="" style="fillColor=none;strokeColor=#64748b;strokeWidth=1.5;" parent="1" vertex="1">
+          <mxGeometry x="55" y="1001" width="2190" height="139" as="geometry" />
+        </mxCell>
+        <mxCell id="p1-41" value="opt" style="rounded=0;whiteSpace=wrap;html=0;fillColor=#e8eef7;strokeColor=#bcc7d6;fontColor=#172b4d;fontSize=18;fontFamily=Arial;align=left;spacingLeft=10;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="55" y="1001" width="90" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="p1-42" value="[happyHourTurnsRemaining &gt; 0 and (customer3.status = WAITING or customer3.status = SEATED)]" style="rounded=0;whiteSpace=wrap;html=0;fillColor=#ffffff;strokeColor=#bcc7d6;fontColor=#172b4d;fontSize=17;fontFamily=Arial;align=left;spacingLeft=10;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="155" y="1005" width="1700" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="p1-43" value="void" style="endArrow=open;endFill=0;dashed=1;html=0;rounded=0;strokeWidth=1.3;strokeColor=#344054;fontColor=#172b4d;fontSize=15;fontFamily=Arial;labelBackgroundColor=#ffffff;verticalAlign=bottom;spacingBottom=4;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="387" y="1170" as="sourcePoint" />
+            <mxPoint x="135" y="1170" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="p1-44" value="State: customer3 is WAITING with satisfaction = 100 (capped). All three controllable staff have acted = false. Happy Hour is active on turns 7 and 8." style="rounded=0;whiteSpace=wrap;html=0;fillColor=#edf7ed;strokeColor=#bcc7d6;fontColor=#172b4d;fontSize=17;fontFamily=Arial;align=left;spacingLeft=10;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="30" y="1204" width="2240" height="62" as="geometry" />
+        </mxCell>
+        <mxCell id="p1-45" value="2. Host seats customer 3 — objects continue on the same lifelines." style="rounded=0;whiteSpace=wrap;html=0;fillColor=#fff8e6;strokeColor=#bcc7d6;fontColor=#172b4d;fontSize=17;fontFamily=Arial;align=left;spacingLeft=10;fontStyle=0;" parent="1" vertex="1">
+          <mxGeometry x="30" y="1294" width="2240" height="62" as="geometry" />
+        </mxCell>
+        <mxCell id="p1-46" value="seatCustomer(3, 1, StaffRole.HOST)" style="endArrow=block;endFill=1;dashed=0;html=0;rounded=0;strokeWidth=1.3;strokeColor=#344054;fontColor=#172b4d;fontSize=15;fontFamily=Arial;labelBackgroundColor=#ffffff;verticalAlign=bottom;spacingBottom=4;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="135" y="1378" as="sourcePoint" />
+            <mxPoint x="387" y="1378" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="p1-47" value="findCustomerById(3)" style="endArrow=block;endFill=1;dashed=0;html=0;rounded=0;strokeWidth=1.3;strokeColor=#344054;fontColor=#172b4d;fontSize=15;fontFamily=Arial;labelBackgroundColor=#ffffff;verticalAlign=bottom;spacingBottom=4;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="387" y="1412" as="sourcePoint" />
+            <mxPoint x="639" y="1412" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="p1-48" value="customer3" style="endArrow=open;endFill=0;dashed=1;html=0;rounded=0;strokeWidth=1.3;strokeColor=#344054;fontColor=#172b4d;fontSize=15;fontFamily=Arial;labelBackgroundColor=#ffffff;verticalAlign=bottom;spacingBottom=4;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="639" y="1446" as="sourcePoint" />
+            <mxPoint x="387" y="1446" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="p1-49" value="findTableById(1)" style="endArrow=block;endFill=1;dashed=0;html=0;rounded=0;strokeWidth=1.3;strokeColor=#344054;fontColor=#172b4d;fontSize=15;fontFamily=Arial;labelBackgroundColor=#ffffff;verticalAlign=bottom;spacingBottom=4;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="387" y="1480" as="sourcePoint" />
+            <mxPoint x="639" y="1480" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="p1-50" value="table1" style="endArrow=open;endFill=0;dashed=1;html=0;rounded=0;strokeWidth=1.3;strokeColor=#344054;fontColor=#172b4d;fontSize=15;fontFamily=Arial;labelBackgroundColor=#ffffff;verticalAlign=bottom;spacingBottom=4;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="639" y="1514" as="sourcePoint" />
+            <mxPoint x="387" y="1514" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="p1-51" value="seatCustomer(customer3, table1)" style="endArrow=block;endFill=1;dashed=0;html=0;rounded=0;strokeWidth=1.3;strokeColor=#344054;fontColor=#172b4d;fontSize=15;fontFamily=Arial;labelBackgroundColor=#ffffff;verticalAlign=bottom;spacingBottom=4;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="387" y="1548" as="sourcePoint" />
+            <mxPoint x="891" y="1548" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="p1-52" value="seatCustomer(customer3)" style="endArrow=block;endFill=1;dashed=0;html=0;rounded=0;strokeWidth=1.3;strokeColor=#344054;fontColor=#172b4d;fontSize=15;fontFamily=Arial;labelBackgroundColor=#ffffff;verticalAlign=bottom;spacingBottom=4;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="891" y="1582" as="sourcePoint" />
+            <mxPoint x="1143" y="1582" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="p1-53" value="SUCCESS" style="endArrow=open;endFill=0;dashed=1;html=0;rounded=0;strokeWidth=1.3;strokeColor=#344054;fontColor=#172b4d;fontSize=15;fontFamily=Arial;labelBackgroundColor=#ffffff;verticalAlign=bottom;spacingBottom=4;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1143" y="1616" as="sourcePoint" />
+            <mxPoint x="891" y="1616" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="p1-54" value="markSeated()" style="endArrow=block;endFill=1;dashed=0;html=0;rounded=0;strokeWidth=1.3;strokeColor=#344054;fontColor=#172b4d;fontSize=15;fontFamily=Arial;labelBackgroundColor=#ffffff;verticalAlign=bottom;spacingBottom=4;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="891" y="1650" as="sourcePoint" />
+            <mxPoint x="1395" y="1650" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="p1-55" value="true" style="endArrow=open;endFill=0;dashed=1;html=0;rounded=0;strokeWidth=1.3;strokeColor=#344054;fontColor=#172b4d;fontSize=15;fontFamily=Arial;labelBackgroundColor=#ffffff;verticalAlign=bottom;spacingBottom=4;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1395" y="1684" as="sourcePoint" />
+            <mxPoint x="891" y="1684" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="p1-56" value="markActed()" style="endArrow=block;endFill=1;dashed=0;html=0;rounded=0;strokeWidth=1.3;strokeColor=#344054;fontColor=#172b4d;fontSize=15;fontFamily=Arial;labelBackgroundColor=#ffffff;verticalAlign=bottom;spacingBottom=4;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="891" y="1718" as="sourcePoint" />
+            <mxPoint x="891" y="1740" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="996" y="1718" />
+              <mxPoint x="996" y="1740" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="p1-57" value="SUCCESS" style="endArrow=open;endFill=0;dashed=1;html=0;rounded=0;strokeWidth=1.3;strokeColor=#344054;fontColor=#172b4d;fontSize=15;fontFamily=Arial;labelBackgroundColor=#ffffff;verticalAlign=bottom;spacingBottom=4;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="891" y="1778" as="sourcePoint" />
+            <mxPoint x="387" y="1778" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="p1-58" value="removeWaitingCustomer(customer3)" style="endArrow=block;endFill=1;dashed=0;html=0;rounded=0;strokeWidth=1.3;strokeColor=#344054;fontColor=#172b4d;fontSize=15;fontFamily=Arial;labelBackgroundColor=#ffffff;verticalAlign=bottom;spacingBottom=4;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="387" y="1812" as="sourcePoint" />
+            <mxPoint x="639" y="1812" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="p1-59" value="true" style="endArrow=open;endFill=0;dashed=1;html=0;rounded=0;strokeWidth=1.3;strokeColor=#344054;fontColor=#172b4d;fontSize=15;fontFamily=Arial;labelBackgroundColor=#ffffff;verticalAlign=bottom;spacingBottom=4;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="639" y="1846" as="sourcePoint" />
+            <mxPoint x="387" y="1846" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="p1-60" value="SUCCESS" style="endArrow=open;endFill=0;dashed=1;html=0;rounded=0;strokeWidth=1.3;strokeColor=#344054;fontColor=#172b4d;fontSize=15;fontFamily=Arial;labelBackgroundColor=#ffffff;verticalAlign=bottom;spacingBottom=4;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="387" y="1880" as="sourcePoint" />
+            <mxPoint x="135" y="1880" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="p1-61" value="Host inherits seatCustomer(...) from SeatingStaff and markActed() from ControllableStaff. These calls execute on the host object." style="rounded=0;whiteSpace=wrap;html=0;fillColor=#fff8e6;strokeColor=#bcc7d6;fontColor=#172b4d;fontSize=17;fontFamily=Arial;align=left;spacingLeft=10;fontStyle=0;" parent="1" vertex="1">
+          <mxGeometry x="30" y="1914" width="2240" height="62" as="geometry" />
+        </mxCell>
+        <mxCell id="p1-62" value="State: table1.occupant = customer3; customer3.status = SEATED; customer3 is removed from the waiting queue; host.acted = true." style="rounded=0;whiteSpace=wrap;html=0;fillColor=#edf7ed;strokeColor=#bcc7d6;fontColor=#172b4d;fontSize=17;fontFamily=Arial;align=left;spacingLeft=10;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="30" y="1998" width="2240" height="62" as="geometry" />
+        </mxCell>
+        <mxCell id="p1-63" value="3. Waiter takes the discounted order — objects continue on the same lifelines." style="rounded=0;whiteSpace=wrap;html=0;fillColor=#fff8e6;strokeColor=#bcc7d6;fontColor=#172b4d;fontSize=17;fontFamily=Arial;align=left;spacingLeft=10;fontStyle=0;" parent="1" vertex="1">
+          <mxGeometry x="30" y="2088" width="2240" height="62" as="geometry" />
+        </mxCell>
+        <mxCell id="p1-64" value="takeOrder(3)" style="endArrow=block;endFill=1;dashed=0;html=0;rounded=0;strokeWidth=1.3;strokeColor=#344054;fontColor=#172b4d;fontSize=15;fontFamily=Arial;labelBackgroundColor=#ffffff;verticalAlign=bottom;spacingBottom=4;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="135" y="2172" as="sourcePoint" />
+            <mxPoint x="387" y="2172" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="p1-65" value="findCustomerById(3)" style="endArrow=block;endFill=1;dashed=0;html=0;rounded=0;strokeWidth=1.3;strokeColor=#344054;fontColor=#172b4d;fontSize=15;fontFamily=Arial;labelBackgroundColor=#ffffff;verticalAlign=bottom;spacingBottom=4;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="387" y="2206" as="sourcePoint" />
+            <mxPoint x="639" y="2206" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="p1-66" value="customer3" style="endArrow=open;endFill=0;dashed=1;html=0;rounded=0;strokeWidth=1.3;strokeColor=#344054;fontColor=#172b4d;fontSize=15;fontFamily=Arial;labelBackgroundColor=#ffffff;verticalAlign=bottom;spacingBottom=4;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="639" y="2240" as="sourcePoint" />
+            <mxPoint x="387" y="2240" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="p1-67" value="chooseMenuItem(menu)" style="endArrow=block;endFill=1;dashed=0;html=0;rounded=0;strokeWidth=1.3;strokeColor=#344054;fontColor=#172b4d;fontSize=15;fontFamily=Arial;labelBackgroundColor=#ffffff;verticalAlign=bottom;spacingBottom=4;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="387" y="2274" as="sourcePoint" />
+            <mxPoint x="1395" y="2274" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="p1-68" value="pasta" style="endArrow=open;endFill=0;dashed=1;html=0;rounded=0;strokeWidth=1.3;strokeColor=#344054;fontColor=#172b4d;fontSize=15;fontFamily=Arial;labelBackgroundColor=#ffffff;verticalAlign=bottom;spacingBottom=4;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1395" y="2308" as="sourcePoint" />
+            <mxPoint x="387" y="2308" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="p1-69" value="calculatePriceCents(1800)" style="endArrow=block;endFill=1;dashed=0;html=0;rounded=0;strokeWidth=1.3;strokeColor=#344054;fontColor=#172b4d;fontSize=15;fontFamily=Arial;labelBackgroundColor=#ffffff;verticalAlign=bottom;spacingBottom=4;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="387" y="2342" as="sourcePoint" />
+            <mxPoint x="1395" y="2342" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="p1-70" value="1620" style="endArrow=open;endFill=0;dashed=1;html=0;rounded=0;strokeWidth=1.3;strokeColor=#344054;fontColor=#172b4d;fontSize=15;fontFamily=Arial;labelBackgroundColor=#ffffff;verticalAlign=bottom;spacingBottom=4;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1395" y="2376" as="sourcePoint" />
+            <mxPoint x="387" y="2376" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="p1-71" value="getHappyHourTurnsRemaining()" style="endArrow=block;endFill=1;dashed=0;html=0;rounded=0;strokeWidth=1.3;strokeColor=#344054;fontColor=#172b4d;fontSize=15;fontFamily=Arial;labelBackgroundColor=#ffffff;verticalAlign=bottom;spacingBottom=4;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="387" y="2410" as="sourcePoint" />
+            <mxPoint x="639" y="2410" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="p1-72" value="2" style="endArrow=open;endFill=0;dashed=1;html=0;rounded=0;strokeWidth=1.3;strokeColor=#344054;fontColor=#172b4d;fontSize=15;fontFamily=Arial;labelBackgroundColor=#ffffff;verticalAlign=bottom;spacingBottom=4;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="639" y="2444" as="sourcePoint" />
+            <mxPoint x="387" y="2444" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="p1-73" value="VIP calculation: (1800 × 9 + 5) / 10 = 1620 cents. Controller then applies Happy Hour: (1620 × 8 + 5) / 10 = 1296 cents (integer division)." style="rounded=0;whiteSpace=wrap;html=0;fillColor=#fff8e6;strokeColor=#bcc7d6;fontColor=#172b4d;fontSize=17;fontFamily=Arial;align=left;spacingLeft=10;fontStyle=0;" parent="1" vertex="1">
+          <mxGeometry x="30" y="2543" width="2240" height="62" as="geometry" />
+        </mxCell>
+        <mxCell id="p1-74" value="" style="fillColor=none;strokeColor=#64748b;strokeWidth=1.5;" parent="1" vertex="1">
+          <mxGeometry x="55" y="2478" width="2190" height="155" as="geometry" />
+        </mxCell>
+        <mxCell id="p1-75" value="opt" style="rounded=0;whiteSpace=wrap;html=0;fillColor=#e8eef7;strokeColor=#bcc7d6;fontColor=#172b4d;fontSize=18;fontFamily=Arial;align=left;spacingLeft=10;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="55" y="2478" width="90" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="p1-76" value="[happyHourTurnsRemaining &gt; 0] — controller applies the additional discount" style="rounded=0;whiteSpace=wrap;html=0;fillColor=#ffffff;strokeColor=#bcc7d6;fontColor=#172b4d;fontSize=17;fontFamily=Arial;align=left;spacingLeft=10;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="155" y="2482" width="1700" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="p1-77" value="«create» Order(pasta, 1296)" style="endArrow=open;endFill=0;dashed=1;html=0;rounded=0;strokeWidth=1.3;strokeColor=#344054;fontColor=#172b4d;fontSize=15;fontFamily=Arial;labelBackgroundColor=#ffffff;verticalAlign=bottom;spacingBottom=4;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="387" y="2663" as="sourcePoint" />
+            <mxPoint x="1811" y="2663" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="p1-78" value="" style="endArrow=none;dashed=1;html=0;rounded=0;strokeWidth=1.3;strokeColor=#344054;fontColor=#172b4d;fontSize=15;fontFamily=Arial;labelBackgroundColor=#ffffff;verticalAlign=bottom;spacingBottom=4;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1899" y="2680" as="sourcePoint" />
+            <mxPoint x="1899" y="4413" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="p1-79" value="order3:Order" style="rounded=0;whiteSpace=wrap;html=0;fillColor=#e8eef7;strokeColor=#bcc7d6;fontColor=#172b4d;fontSize=14;fontFamily=Arial;align=left;spacingLeft=10;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="1811" y="2646" width="176" height="34" as="geometry" />
+        </mxCell>
+        <mxCell id="p1-80" value="takeOrder(customer3, order3)" style="endArrow=block;endFill=1;dashed=0;html=0;rounded=0;strokeWidth=1.3;strokeColor=#344054;fontColor=#172b4d;fontSize=15;fontFamily=Arial;labelBackgroundColor=#ffffff;verticalAlign=bottom;spacingBottom=4;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="387" y="2708" as="sourcePoint" />
+            <mxPoint x="1647" y="2708" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="p1-81" value="placeOrder(order3)" style="endArrow=block;endFill=1;dashed=0;html=0;rounded=0;strokeWidth=1.3;strokeColor=#344054;fontColor=#172b4d;fontSize=15;fontFamily=Arial;labelBackgroundColor=#ffffff;verticalAlign=bottom;spacingBottom=4;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1647" y="2742" as="sourcePoint" />
+            <mxPoint x="1395" y="2742" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="p1-82" value="SUCCESS" style="endArrow=open;endFill=0;dashed=1;html=0;rounded=0;strokeWidth=1.3;strokeColor=#344054;fontColor=#172b4d;fontSize=15;fontFamily=Arial;labelBackgroundColor=#ffffff;verticalAlign=bottom;spacingBottom=4;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1395" y="2776" as="sourcePoint" />
+            <mxPoint x="1647" y="2776" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="p1-83" value="markActed()" style="endArrow=block;endFill=1;dashed=0;html=0;rounded=0;strokeWidth=1.3;strokeColor=#344054;fontColor=#172b4d;fontSize=15;fontFamily=Arial;labelBackgroundColor=#ffffff;verticalAlign=bottom;spacingBottom=4;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1647" y="2810" as="sourcePoint" />
+            <mxPoint x="1647" y="2832" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="1542" y="2810" />
+              <mxPoint x="1542" y="2832" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="p1-84" value="SUCCESS" style="endArrow=open;endFill=0;dashed=1;html=0;rounded=0;strokeWidth=1.3;strokeColor=#344054;fontColor=#172b4d;fontSize=15;fontFamily=Arial;labelBackgroundColor=#ffffff;verticalAlign=bottom;spacingBottom=4;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1647" y="2870" as="sourcePoint" />
+            <mxPoint x="387" y="2870" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="p1-85" value="SUCCESS" style="endArrow=open;endFill=0;dashed=1;html=0;rounded=0;strokeWidth=1.3;strokeColor=#344054;fontColor=#172b4d;fontSize=15;fontFamily=Arial;labelBackgroundColor=#ffffff;verticalAlign=bottom;spacingBottom=4;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="387" y="2904" as="sourcePoint" />
+            <mxPoint x="135" y="2904" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="p1-86" value="State: customer3.order = order3; order3 is PLACED with 0/2 units; finalPriceCents = 1296 ($12.96); waiter.acted = true. Customer remains SEATED." style="rounded=0;whiteSpace=wrap;html=0;fillColor=#edf7ed;strokeColor=#bcc7d6;fontColor=#172b4d;fontSize=17;fontFamily=Arial;align=left;spacingLeft=10;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="30" y="2938" width="2240" height="62" as="geometry" />
+        </mxCell>
+        <mxCell id="p1-87" value="4. First preparation unit and end of turn — objects continue on the same lifelines." style="rounded=0;whiteSpace=wrap;html=0;fillColor=#fff8e6;strokeColor=#bcc7d6;fontColor=#172b4d;fontSize=17;fontFamily=Arial;align=left;spacingLeft=10;fontStyle=0;" parent="1" vertex="1">
+          <mxGeometry x="30" y="3028" width="2240" height="62" as="geometry" />
+        </mxCell>
+        <mxCell id="p1-88" value="prepareOrder(3)" style="endArrow=block;endFill=1;dashed=0;html=0;rounded=0;strokeWidth=1.3;strokeColor=#344054;fontColor=#172b4d;fontSize=15;fontFamily=Arial;labelBackgroundColor=#ffffff;verticalAlign=bottom;spacingBottom=4;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="135" y="3112" as="sourcePoint" />
+            <mxPoint x="387" y="3112" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="p1-89" value="hasActed()" style="endArrow=block;endFill=1;dashed=0;html=0;rounded=0;strokeWidth=1.3;strokeColor=#344054;fontColor=#172b4d;fontSize=15;fontFamily=Arial;labelBackgroundColor=#ffffff;verticalAlign=bottom;spacingBottom=4;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="387" y="3146" as="sourcePoint" />
+            <mxPoint x="1647" y="3146" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="p1-90" value="acted" style="endArrow=open;endFill=0;dashed=1;html=0;rounded=0;strokeWidth=1.3;strokeColor=#344054;fontColor=#172b4d;fontSize=15;fontFamily=Arial;labelBackgroundColor=#ffffff;verticalAlign=bottom;spacingBottom=4;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1647" y="3180" as="sourcePoint" />
+            <mxPoint x="387" y="3180" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="p1-91" value="findCustomerById(3)" style="endArrow=block;endFill=1;dashed=0;html=0;rounded=0;strokeWidth=1.3;strokeColor=#344054;fontColor=#172b4d;fontSize=15;fontFamily=Arial;labelBackgroundColor=#ffffff;verticalAlign=bottom;spacingBottom=4;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="387" y="3279" as="sourcePoint" />
+            <mxPoint x="639" y="3279" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="p1-92" value="customer3" style="endArrow=open;endFill=0;dashed=1;html=0;rounded=0;strokeWidth=1.3;strokeColor=#344054;fontColor=#172b4d;fontSize=15;fontFamily=Arial;labelBackgroundColor=#ffffff;verticalAlign=bottom;spacingBottom=4;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="639" y="3313" as="sourcePoint" />
+            <mxPoint x="387" y="3313" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="p1-93" value="prepareOrder(order3)" style="endArrow=block;endFill=1;dashed=0;html=0;rounded=0;strokeWidth=1.3;strokeColor=#344054;fontColor=#172b4d;fontSize=15;fontFamily=Arial;labelBackgroundColor=#ffffff;verticalAlign=bottom;spacingBottom=4;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="387" y="3347" as="sourcePoint" />
+            <mxPoint x="2151" y="3347" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="p1-94" value="prepareOneUnit()" style="endArrow=block;endFill=1;dashed=0;html=0;rounded=0;strokeWidth=1.3;strokeColor=#344054;fontColor=#172b4d;fontSize=15;fontFamily=Arial;labelBackgroundColor=#ffffff;verticalAlign=bottom;spacingBottom=4;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="2151" y="3381" as="sourcePoint" />
+            <mxPoint x="1899" y="3381" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="p1-95" value="SUCCESS" style="endArrow=open;endFill=0;dashed=1;html=0;rounded=0;strokeWidth=1.3;strokeColor=#344054;fontColor=#172b4d;fontSize=15;fontFamily=Arial;labelBackgroundColor=#ffffff;verticalAlign=bottom;spacingBottom=4;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1899" y="3415" as="sourcePoint" />
+            <mxPoint x="2151" y="3415" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="p1-96" value="markActed()" style="endArrow=block;endFill=1;dashed=0;html=0;rounded=0;strokeWidth=1.3;strokeColor=#344054;fontColor=#172b4d;fontSize=15;fontFamily=Arial;labelBackgroundColor=#ffffff;verticalAlign=bottom;spacingBottom=4;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="2151" y="3449" as="sourcePoint" />
+            <mxPoint x="2151" y="3471" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="2046" y="3449" />
+              <mxPoint x="2046" y="3471" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="p1-97" value="SUCCESS" style="endArrow=open;endFill=0;dashed=1;html=0;rounded=0;strokeWidth=1.3;strokeColor=#344054;fontColor=#172b4d;fontSize=15;fontFamily=Arial;labelBackgroundColor=#ffffff;verticalAlign=bottom;spacingBottom=4;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="2151" y="3509" as="sourcePoint" />
+            <mxPoint x="387" y="3509" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="p1-98" value="SUCCESS" style="endArrow=open;endFill=0;dashed=1;html=0;rounded=0;strokeWidth=1.3;strokeColor=#344054;fontColor=#172b4d;fontSize=15;fontFamily=Arial;labelBackgroundColor=#ffffff;verticalAlign=bottom;spacingBottom=4;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="387" y="3543" as="sourcePoint" />
+            <mxPoint x="135" y="3543" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="p1-99" value="" style="endArrow=none;dashed=1;html=0;rounded=0;strokeWidth=1.3;strokeColor=#344054;fontColor=#172b4d;fontSize=15;fontFamily=Arial;labelBackgroundColor=#ffffff;verticalAlign=bottom;spacingBottom=4;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="55" y="3577" as="sourcePoint" />
+            <mxPoint x="2245" y="3577" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="p1-100" value="[else: acted = false] — alternative; Chef is not called" style="rounded=0;whiteSpace=wrap;html=0;fillColor=#ffffff;strokeColor=#bcc7d6;fontColor=#172b4d;fontSize=17;fontFamily=Arial;align=left;spacingLeft=10;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="65" y="3582" width="900" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="p1-101" value="WAITER_NOT_FINISHED" style="endArrow=open;endFill=0;dashed=1;html=0;rounded=0;strokeWidth=1.3;strokeColor=#344054;fontColor=#172b4d;fontSize=15;fontFamily=Arial;labelBackgroundColor=#ffffff;verticalAlign=bottom;spacingBottom=4;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="387" y="3645" as="sourcePoint" />
+            <mxPoint x="135" y="3645" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="p1-102" value="" style="fillColor=none;strokeColor=#64748b;strokeWidth=1.5;" parent="1" vertex="1">
+          <mxGeometry x="55" y="3214" width="2190" height="471" as="geometry" />
+        </mxCell>
+        <mxCell id="p1-103" value="alt" style="rounded=0;whiteSpace=wrap;html=0;fillColor=#e8eef7;strokeColor=#bcc7d6;fontColor=#172b4d;fontSize=18;fontFamily=Arial;align=left;spacingLeft=10;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="55" y="3214" width="90" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="p1-104" value="[acted = true] — selected; Chef and order eligibility checks succeed" style="rounded=0;whiteSpace=wrap;html=0;fillColor=#ffffff;strokeColor=#bcc7d6;fontColor=#172b4d;fontSize=17;fontFamily=Arial;align=left;spacingLeft=10;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="155" y="3218" width="1700" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="p1-105" value="endTurn()" style="endArrow=block;endFill=1;dashed=0;html=0;rounded=0;strokeWidth=1.3;strokeColor=#344054;fontColor=#172b4d;fontSize=15;fontFamily=Arial;labelBackgroundColor=#ffffff;verticalAlign=bottom;spacingBottom=4;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="135" y="3715" as="sourcePoint" />
+            <mxPoint x="387" y="3715" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="p1-106" value="endTurn() processes: payments → EATING customers → JUST_SERVED customers → satisfaction / abandonment → advanceTurn().&#10;Customer 3 is SEATED, so only satisfaction / abandonment applies to this customer. Other customers are outside this trace." style="rounded=0;whiteSpace=wrap;html=0;fillColor=#fff8e6;strokeColor=#bcc7d6;fontColor=#172b4d;fontSize=17;fontFamily=Arial;align=left;spacingLeft=10;fontStyle=0;" parent="1" vertex="1">
+          <mxGeometry x="30" y="3749" width="2240" height="62" as="geometry" />
+        </mxCell>
+        <mxCell id="p1-107" value="applyWaitingPenalty()" style="endArrow=block;endFill=1;dashed=0;html=0;rounded=0;strokeWidth=1.3;strokeColor=#344054;fontColor=#172b4d;fontSize=15;fontFamily=Arial;labelBackgroundColor=#ffffff;verticalAlign=bottom;spacingBottom=4;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="387" y="3833" as="sourcePoint" />
+            <mxPoint x="1395" y="3833" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="p1-108" value="void" style="endArrow=open;endFill=0;dashed=1;html=0;rounded=0;strokeWidth=1.3;strokeColor=#344054;fontColor=#172b4d;fontSize=15;fontFamily=Arial;labelBackgroundColor=#ffffff;verticalAlign=bottom;spacingBottom=4;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1395" y="3867" as="sourcePoint" />
+            <mxPoint x="387" y="3867" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="p1-109" value="markLeft()" style="endArrow=block;endFill=1;dashed=0;html=0;rounded=0;strokeWidth=1.3;strokeColor=#344054;fontColor=#172b4d;fontSize=15;fontFamily=Arial;labelBackgroundColor=#ffffff;verticalAlign=bottom;spacingBottom=4;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="387" y="3901" as="sourcePoint" />
+            <mxPoint x="1395" y="3901" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="p1-110" value="false" style="endArrow=open;endFill=0;dashed=1;html=0;rounded=0;strokeWidth=1.3;strokeColor=#344054;fontColor=#172b4d;fontSize=15;fontFamily=Arial;labelBackgroundColor=#ffffff;verticalAlign=bottom;spacingBottom=4;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1395" y="3935" as="sourcePoint" />
+            <mxPoint x="387" y="3935" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="p1-111" value="advanceTurn()" style="endArrow=block;endFill=1;dashed=0;html=0;rounded=0;strokeWidth=1.3;strokeColor=#344054;fontColor=#172b4d;fontSize=15;fontFamily=Arial;labelBackgroundColor=#ffffff;verticalAlign=bottom;spacingBottom=4;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="387" y="3969" as="sourcePoint" />
+            <mxPoint x="639" y="3969" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="p1-112" value="true" style="endArrow=open;endFill=0;dashed=1;html=0;rounded=0;strokeWidth=1.3;strokeColor=#344054;fontColor=#172b4d;fontSize=15;fontFamily=Arial;labelBackgroundColor=#ffffff;verticalAlign=bottom;spacingBottom=4;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="639" y="4003" as="sourcePoint" />
+            <mxPoint x="387" y="4003" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="p1-113" value="true" style="endArrow=open;endFill=0;dashed=1;html=0;rounded=0;strokeWidth=1.3;strokeColor=#344054;fontColor=#172b4d;fontSize=15;fontFamily=Arial;labelBackgroundColor=#ffffff;verticalAlign=bottom;spacingBottom=4;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="387" y="4037" as="sourcePoint" />
+            <mxPoint x="135" y="4037" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="p1-114" value="End of Turn 7: currentTurn = 8; Happy Hour has 1 turn remaining; customer3 = SEATED, satisfaction = 95; order3 = PREPARING (1/2); table1 occupied; chef.acted = true." style="rounded=0;whiteSpace=wrap;html=0;fillColor=#edf7ed;strokeColor=#bcc7d6;fontColor=#172b4d;fontSize=17;fontFamily=Arial;align=left;spacingLeft=10;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="30" y="4071" width="2240" height="62" as="geometry" />
+        </mxCell>
+        <mxCell id="p1-115" value="How this implements the use case: GameCLI sends player choices to GameController. The controller coordinates objects; Host seats the customer,&#10;VIPCustomer supplies VIP pricing, the controller adds Happy Hour pricing, Waiter places the Order, and Chef advances preparation after Waiter has acted." style="rounded=0;whiteSpace=wrap;html=0;fillColor=#fff8e6;strokeColor=#bcc7d6;fontColor=#172b4d;fontSize=17;fontFamily=Arial;align=left;spacingLeft=10;fontStyle=0;" parent="1" vertex="1">
+          <mxGeometry x="30" y="4161" width="2240" height="62" as="geometry" />
+        </mxCell>
+        <mxCell id="p1-116" value="The selected path has acted = true. The alt fragment also shows the rejected preparation call when acted = false; this alternative does not occur in this run.&#10;Happy Hour bonus application normally iterates over customers; only customer 3 is expanded here. No loop is implied over this one customer." style="rounded=0;whiteSpace=wrap;html=0;fillColor=#fff8e6;strokeColor=#bcc7d6;fontColor=#172b4d;fontSize=17;fontFamily=Arial;align=left;spacingLeft=10;fontStyle=0;" parent="1" vertex="1">
+          <mxGeometry x="30" y="4245" width="2240" height="62" as="geometry" />
+        </mxCell>
+        <mxCell id="p1-117" value="Scope at endTurn(): payment → eating → just-served → satisfaction / abandonment → advanceTurn(). The supplied victory run also pays customer 2;&#10;that interaction is outside this customer-3 use case. Customer 3 remains SEATED until served and therefore loses 5 satisfaction points this turn." style="rounded=0;whiteSpace=wrap;html=0;fillColor=#fff8e6;strokeColor=#bcc7d6;fontColor=#172b4d;fontSize=17;fontFamily=Arial;align=left;spacingLeft=10;fontStyle=0;" parent="1" vertex="1">
+          <mxGeometry x="30" y="4329" width="2240" height="62" as="geometry" />
+        </mxCell>
+        <mxCell id="p1-118" value="Notation: solid filled arrow = synchronous call; dashed open arrow = reply or «create»; opt = conditional interaction; alt = mutually exclusive branches.&#10;State notes are not return values. Execution bars are omitted. Staff markActed() methods are inherited; the calls execute on the actual staff objects.&#10;Outcome applies after endTurn(), before Turn 8 startTurn(): satisfaction = 95; the next turn’s Happy Hour bonus has not yet been applied." style="rounded=0;whiteSpace=wrap;html=0;fillColor=#f5f7fa;strokeColor=#bcc7d6;fontColor=#172b4d;fontSize=16;fontFamily=Arial;align=left;spacingLeft=10;fontStyle=0;" parent="1" vertex="1">
+          <mxGeometry x="30" y="4413" width="2240" height="72" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
