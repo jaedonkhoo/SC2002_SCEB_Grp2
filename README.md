@@ -131,3 +131,10 @@ Complete chronological AI conversation histories are maintained on individual gr
 ## Video Timestamps
 
 Pending recording.
+
+## kiyaya0829: diagrams and AI evidence
+
+- [Stage 1 class diagram PDF](uml%20dragrams/stage-1-class-diagram-single-page.pdf)
+- [Stage 3 sequence diagram PDF](uml%20dragrams/stage-3-sequence-diagram.drawio.pdf)
+- [Personal AI history](https://github.com/jaedonkhoo/SC2002_SCEB_Grp2/tree/ai-history-kiyaya0829/ai-history)
+- [Complete diagram-review chat](https://github.com/jaedonkhoo/SC2002_SCEB_Grp2/blob/ai-history-kiyaya0829/ai-history/complete/chat-01.md)
