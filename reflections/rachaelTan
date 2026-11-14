@@ -1,6 +1,9 @@
 contribution
 Did stage 2 and 3 uml diagrams
-1. learned how inheritance and abstraction can reduce code duplication and improve code reusability, and how to organise classes based on their responsibilities
-2. ntroduced ControllableStaff to share common staff methods and SeatingStaff to share seating functionality between Waiter and Host
-3. how to structure the inheritance relationships as we added more classes. 
-4 compared each staff class to identify common functionality then reorganised the uml
+1. I learned how to apply inheritance, abstraction, and polymorphism when designing UML class diagrams. More importantly, I gained a better understanding of how to organise class relationships to make a system more reusable and maintainable.
+
+2. In Stage 2, I represented how `VIPCustomer` and `CriticCustomer` inherit from `Customer` while having different behaviours\. In Stage 3, I applied abstraction by modelling `ControllableStaff` and `SeatingStaff` as parent classes to reduce duplicated functionality.
+
+3. One challenge was determining whether to use association or dependency between classes. For example, GameController stores a Waiter object as an attribute, while SeatingStaff only uses Customer and Table as method parameters, making their UML relationships different.
+
+4 I examined the Java code to identify how each class referenced other classes. I represented stored objects using solid association lines and method parameters using dashed dependency arrows, then checked their directions and multiplicities against the code.
