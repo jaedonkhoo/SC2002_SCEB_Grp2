@@ -138,3 +138,6 @@ Pending recording.
 - [Stage 3 sequence diagram PDF](uml%20dragrams/stage-3-sequence-diagram.drawio.pdf)
 - [Personal AI history](https://github.com/jaedonkhoo/SC2002_SCEB_Grp2/tree/ai-history-kiyaya0829/ai-history)
 - [Complete diagram-review chat](https://github.com/jaedonkhoo/SC2002_SCEB_Grp2/blob/ai-history-kiyaya0829/ai-history/complete/chat-01.md)
+
+## YE Diwen: ai declaration and ai history
+AI declaration: https://github.com/jaedonkhoo/SC2002_SCEB_Grp2/blob/YEDiwen/YE%20Diwen%20Declaration%20on%20Use%20of%20GAI%20Assistance.pdf
