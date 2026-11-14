@@ -1,3 +1,5 @@
+contribution
+Did stage 2 and 3 uml diagrams
 1. learned how inheritance and abstraction can reduce code duplication and improve code reusability, and how to organise classes based on their responsibilities
 2. ntroduced ControllableStaff to share common staff methods and SeatingStaff to share seating functionality between Waiter and Host
 3. how to structure the inheritance relationships as we added more classes. 
