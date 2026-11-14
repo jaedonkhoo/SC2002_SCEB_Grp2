@@ -140,6 +140,6 @@ Pending recording.
 - [Complete diagram-review chat](https://github.com/jaedonkhoo/SC2002_SCEB_Grp2/blob/ai-history-kiyaya0829/ai-history/complete/chat-01.md)
 
 ## YE Diwen: ai declaration and ai history
-AI declaration:
+AI declaration: https://github.com/jaedonkhoo/SC2002_SCEB_Grp2/blob/dbbc44d5153d52a5bd94281cbf44b5f0b9577698/YE%20Diwen%20Declaration%20on%20Use%20of%20GAI%20Assistance.pdf
 
 AI chat history: https://github.com/jaedonkhoo/SC2002_SCEB_Grp2/blob/YEDiwen/YeDiwen-aichat-history
