@@ -1,9 +1,10 @@
-contribution
-Did stage 2 and 3 uml diagrams
+Contribution:
+I worked on the UML class diagrams for Stages 2 and 3 of Restaurant Rush. I identified the classes, their attributes and methods, and the relationships between them.
+
 1. I learned how to apply inheritance, abstraction, and polymorphism when designing UML class diagrams. More importantly, I gained a better understanding of how to organise class relationships to make a system more reusable and maintainable.
 
-2. In Stage 2, I represented how `VIPCustomer` and `CriticCustomer` inherit from `Customer` while having different behaviours\. In Stage 3, I applied abstraction by modelling `ControllableStaff` and `SeatingStaff` as parent classes to reduce duplicated functionality.
+2. In Stage 2, I represented how VIPCustomer and CriticCustomer inherit from Customer while having different behaviours. In Stage 3, I represented the new staff hierarchy, where Waiter and Host inherit from SeatingStaff, while SeatingStaff and Chef inherit from ControllableStaff.
 
-3. One challenge was determining whether to use association or dependency between classes. For example, GameController stores a Waiter object as an attribute, while SeatingStaff only uses Customer and Table as method parameters, making their UML relationships different.
+3. The hardest part was identifying the correct relationships and multiplicities between classes, especially when the same class was referenced in different ways. For example, GameController stores a Waiter object as an attribute, whereas SeatingStaff only uses Customer and Table as method parameters, so I had to determine whether to use a solid association or dashed dependency.
 
-4 I examined the Java code to identify how each class referenced other classes. I represented stored objects using solid association lines and method parameters using dashed dependency arrows, then checked their directions and multiplicities against the code.
+4. I went through the Java files individually and checked how each class interacted with the others. I used attributes to identify associations, method parameters and local variables to identify dependencies, and extends to identify inheritance. I also checked the multiplicities and arrow directions against the code to make sure the diagrams represented the actual class relationships.
