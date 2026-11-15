@@ -134,4 +134,15 @@ The remaining contributors declared no AI use.
 
 ## Video Timestamps
 
-Pending recording.
+| Segment | Timestamp |
+|---|---|
+| Game launching from the submitted project | 01:22 |
+| Meaningful manager choices and staff constraints | 03:28 |
+| READY → SERVED → payment | 02:02 |
+| VIP or Critic behaviour | 02:49 (VIP); 03:43 (Critic) |
+| Host | 01:47 |
+| Victory and defeat | 05:02 (victory); 05:22 (defeat) |
+| Stage comparisons and UML diagrams | 05:35 (Stage 1 UML); 07:21 (Stage 2 UML); 08:10 (Stage 1 → 2 changes); 08:25 (Stage 3 UML); 09:09 (Stage 2 → 3 changes) |
+| Design decisions | 09:22 |
+| Stage 3 sequence diagram | 09:49 | 
+| Individual reflections | 13:09–14:29 |
