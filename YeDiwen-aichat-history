@@ -1,1 +1,2409 @@
+chat01
+Student name: Ye Diwen
+Student ID: N2602502D
+Ai tool name: Gemini
+topic: Restaurant_Rush_Group_Assignment stage 1
+starting time
+
+
+
+Q 中文合和我沟通
+A 没问题，接下来我会全程使用中文与您交流。我是 Gemini Notebook。
+目前您的笔记本中还没有添加任何资料。您想要先上传相关文档（如 PDF、网页链接或笔记），还是让我为您在网络上搜集某个主题的资料？
+💡 如果您有明确想探讨的话题，可以直接告诉我，我们可以先从网络研究开始！
+Q 我现在被分到的是stage 1请问有什么我要写的吗 或者说大纲 或者说那个uml chart你文字给我一下？
+
+A 在 Stage 1（Basic operation） 中，你需要完成的是整个餐厅管理游戏最核心的基础设施与基础玩法逻辑。Stage 1 必须能独立编译和运行，并且不能包含 Stage 2（如 VIP/Critic 顾客）或 Stage 3（如 Host、ComboMeal、Happy Hour）的特性。
+
+一、 Stage 1 需要编写的内容与交付大纲
+1. 代码部分（Java 实现）
+游戏基础配置与数据模型：
+基础设定：18 个回合、2 张餐桌、1 名 Waiter（服务员）、1 名 Chef（厨师）、1 名 Cashier（收银员）。
+顾客到达：固定在第 1, 4, 7, 10, 13, 16 回合各到达 1 位普通顾客（共 6 位，初始满意度 100）。
+菜单项：Salad（$9.00，1 单位制作时间）、Burger（$15.00，1 单位制作时间）、Pasta（$18.00，2 单位制作时间）。
+回合逻辑控制器（6 个步骤按顺序循环执行）：
+Arrivals：符合条件的顾客进入等待队列。
+Manager Choices：玩家操作 Waiter（安排入座 / 取单 / 送餐 / 等待）和 Chef（制作指定订单 / 等待）。
+Kitchen & Serving：Waiter 先行动，Chef 后行动；订单完成后变为 READY，最快需下一回合才能送达并标记为 SERVED。
+Eating & Payment：已送餐顾客用餐 1 回合后变为 READY_TO_PAY；Cashier 每回合自动处理 1 位最早就绪的顾客结账，增加收入，释放餐桌。
+Waiting & Abandonment：回合结束时，未送餐的等待/在座顾客扣除 8 点满意度，跌至 0 时离开不付款。
+Result：运行满 18 回合后判断胜负（付费人数 ≥ 4、收入 ≥ $45、平均满意度 ≥ 60 即可胜利）。
+命令行界面（CLI）：
+回合开始时展示：回合数、当前收入、平均满意度、队列、餐桌状态、订单状态及可用员工任务。
+输入校验与异常处理：若玩家作出无效选择（如试图安排 Waiter 处理不存在的订单），需提示原因并允许重新选择，不消耗任务次数。
+2. 测试与文档部分（用于 Git 与 Report）
+Git 标签：提交时需要在代码仓库对应 commit 打上 stage-1 标签。
+测试记录：提供 1 个可复现的胜利运行流程 和 1 个可复现的失败运行流程 测试记录。
+
+二、 Stage 1 文本版 UML 类图 (Class Diagram)
+以下是符合面向对象设计原则（分层清晰：UI/Control/Domain/Enum）的 Stage 1 核心类图结构文本形式：
+===================================================================
+                       UML CLASS DIAGRAM (STAGE 1)
+===================================================================
+
+-------------------------------------------------------------------
+[ Enums ]
+-------------------------------------------------------------------
+<<enumeration>> CustomerStatus
+- WAITING_IN_QUEUE
+- SEATED
+- SERVED
+- READY_TO_PAY
+- PAID
+- LEFT_UNHAPPY
+
+<<enumeration>> OrderStatus
+- PENDING
+- IN_PREPARATION
+- READY
+- SERVED
+- PAID
+
+-------------------------------------------------------------------
+[ Boundary / UI ]
+-------------------------------------------------------------------
+class RestaurantGameCLI {
+    - gameController: GameController
+    + main(args: String[]): void
+    + displayTurnStart(gameState: GameState): void
+    + promptWaiterChoice(): WaiterAction
+    + promptChefChoice(): ChefAction
+    + displayError(message: String): void
+    + displayEndGameResult(isVictory: boolean, summary: String): void
+}
+
+-------------------------------------------------------------------
+[ Controller ]
+-------------------------------------------------------------------
+class GameController {
+    - currentTurn: int
+    - totalRevenueInCents: int
+    - waitingQueue: List<Customer>
+    - tables: List<Table>
+    - waiter: Waiter
+    - chef: Chef
+    - cashier: Cashier
+    - menu: Menu
+    + runTurn(waiterAction: WaiterAction, chefAction: ChefAction): void
+    - processArrivals(): void
+    - executeManagerChoices(waiterAction: WaiterAction, chefAction: ChefAction): void
+    - processKitchenAndServing(): void
+    - processEatingAndPayment(): void
+    - updateSatisfactionAndAbandonment(): void
+    - checkGameEnding(): boolean
+    + isVictory(): boolean
+}
+
+-------------------------------------------------------------------
+[ Domain / Entity Classes ]
+-------------------------------------------------------------------
+class Customer {
+    - id: int
+    - satisfaction: int = 100
+    - status: CustomerStatus
+    - order: Order
+    + decreaseSatisfaction(points: int): void
+    + isReadyToLeave(): boolean
+}
+
+class Order {
+    - orderId: int
+    - menuItem: MenuItem
+    - prepUnitsRequired: int
+    - prepUnitsCompleted: int
+    - status: OrderStatus
+    + advancePreparation(): void
+    + isFullyPrepared(): boolean
+}
+
+class MenuItem {
+    - name: String
+    - priceInCents: int
+    - prepUnitsRequired: int
+}
+
+class Table {
+    - tableId: int
+    - occupiedCustomer: Customer
+    + isAvailable(): boolean
+    + seatCustomer(customer: Customer): void
+    + releaseTable(): void
+}
+
+class Menu {
+    - items: List<MenuItem>
+    + getRandomOrDeterministicItem(): MenuItem
+}
+
+-------------------------------------------------------------------
+[ Staff Classes ]
+-------------------------------------------------------------------
+abstract class Staff {
+    - name: String
+    - busyThisTurn: boolean
+}
+
+class Waiter extends Staff {
+    + seatCustomer(customer: Customer, table: Table): void
+    + takeOrder(customer: Customer, menuItem: MenuItem): Order
+    + serveOrder(order: Order): void
+}
+
+class Chef extends Staff {
+    + cookOrder(order: Order): void
+}
+
+class Cashier extends Staff {
+    + processPayment(customer: Customer): int
+}
+
+===================================================================
+[ Key Relationships ]
+- GameController "1" *-- "2" Table : contains >
+- GameController "1" *-- "1" Menu : uses >
+- Table "1" o-- "0..1" Customer : holds >
+- Customer "1" *-- "0..1" Order : places >
+- Order "1" --> "1" MenuItem : contains >
+- GameController "1" *-- "1" Waiter : controls >
+- GameController "1" *-- "1" Chef : controls >
+- GameController "1" *-- "1" Cashier : controls >
+===================================================================
+
+💡 下一步建议： 如果您需要将这个 UML 类图转为 PlantUML 格式的代码（以便直接生成图片放进 Report 报告中），或者需要我为您规划 Stage 1 各模块的具体代码框架，请随时告诉我！
+Q 我总共要写哪些class列出来
+
+A在 Stage 1 中，按照面向对象设计的职责单一原则（SRP）与分层架构，你总共需要编写大约 12 ~ 14 个 Class/Enum。它们可以划分为以下 5 个核心模块：
+1. 边界/界面层（Boundary / UI）
+RestaurantGameCLI：负责与玩家交互的命令行界面，读取控制台输入、校验格式、展示错误提示并打印回合开始/结束的信息。
+2. 控制层（Control / Controller）
+GameController：游戏核心控制器，负责掌控 18 个回合的进度、管理 6 个回合步骤（顾客到达、玩家决策、厨房制作/送餐、用餐与结账、满意度扣减与离开、胜负结算）以及统计总收入和平均满意度。
+3. 员工角色层（Staff / Roles）
+为了支持继承（Inheritance）与多态（Polymorphism），建议建立抽象基类：
+Staff（抽象类）：所有员工的父类，定义员工姓名、本回合是否已占用等通用属性。
+Waiter：侍应生类（每回合可执行 1 次任务：安排入座、取单、送餐或 Wait）。
+Chef：厨师类（每回合可推进指定订单 1 个制作单位，或 Wait）。
+Cashier：收银员类（每回合自动为最早就绪的顾客结账 1 次）。
+4. 领域实体层（Domain / Entities）
+Customer：普通顾客类，记录顾客 ID、满意度（初始 100，每回合未送餐扣 8 点）、当前状态及所点订单。
+Table：餐桌类（固定 2 张），记录餐桌是否被占用及绑定的顾客。
+Order：订单类，管理订单状态（PENDING, IN_PREPARATION, READY, SERVED, PAID）、已完成与所需的制作单位。
+MenuItem：菜单项类，包含菜品名称、价格（美分表示）和所需制作单位。
+Menu：菜单管理类，维护 3 种基础菜品（Salad $9.00/1单位, Burger $15.00/1单位, Pasta $18.00/2单位），并包含顾客自主选择菜品的逻辑。
+5. 枚举类型（Enums）
+CustomerStatus：顾客状态（WAITING_IN_QUEUE, SEATED, SERVED, READY_TO_PAY, PAID, LEFT_UNHAPPY）。
+OrderStatus：订单状态（PENDING, IN_PREPARATION, READY, SERVED, PAID）。
+WaiterAction / ChefAction（可选但推荐）：定义侍应生与厨师在玩家决策阶段的合法指令类型。
+
+💡 需要我帮你把这些 Class 整理成可以直接复制到 IDE 中的 Java 接口/骨架代码（Boilerplate Code） 吗？
+Q 你按顺序给我 所以是每个class一个文件对吗
+
+A 是的，在 Java 标准规范中，每一个 public 的 class 或 enum 都必须放在一个独立的 .java 文件中，并且文件名必须与类名完全一致（例如 Customer.java）。
+为了方便开发与后续 Stage 2/3 的扩展，建议你按照**自底向上（Bottom-Up，无依赖到高层控制）**的顺序来依次创建和编写这些文件：
+
+建议的文件创建与开发顺序
+第一阶段：枚举类型（Enums，无任何依赖）
+CustomerStatus.java：定义顾客状态（WAITING_IN_QUEUE, SEATED, SERVED, READY_TO_PAY, PAID, LEFT_UNHAPPY）。
+OrderStatus.java：定义订单状态（PENDING, IN_PREPARATION, READY, SERVED, PAID）。
+WaiterAction.java：定义侍应生可选的行动指令（SEAT, TAKE_ORDER, SERVE, WAIT）。
+ChefAction.java：定义厨师可选的行动指令（COOK, WAIT）。
+第二阶段：基础数据实体（Domain Models，游戏核心数据载体）
+MenuItem.java：菜品类（记录 Salad $9.00/1单位、Burger $15.00/1单位、Pasta $18.00/2单位等名称与价格）。
+Menu.java：菜单管理类，维护菜单列表及顾客自主点餐逻辑。
+Order.java：订单类，管理菜品、制作进度（单位推进）及当前订单状态。
+Customer.java：普通顾客类，记录顾客 ID、满意度（初始 100，未送餐每回合扣 8 点）及对应订单。
+Table.java：餐桌类（固定 2 张桌子），记录占用状态与绑定的顾客。
+第三阶段：员工体系（Staff Hierarchy，体现继承与职责划分）
+Staff.java：员工抽象基类（Abstract Class），定义通用属性（如姓名、本回合是否忙碌）。
+Waiter.java：继承 Staff，实现入座、取单、送餐 3 种基本任务。
+Chef.java：继承 Staff，实现对指定订单推进 1 个制作单位的任务。
+Cashier.java：继承 Staff，实现回合结束前自动为最早就绪的顾客结账。
+第四阶段：控制层（Game Controller，业务逻辑核心）
+GameController.java：掌控 18 个回合的流转，严格按顺序执行 6 个步骤（Arrivals → Choices → Kitchen & Serving → Eating & Payment → Waiting & Abandonment → Result），并计算胜负条件（付费人数 ≥ 4，收入 ≥ $45，平均满意度 ≥ 60）。
+第五阶段：界面与程序入口（UI / Boundary）
+RestaurantGameCLI.java：包含 main 方法，负责控制台打印回合状态（收入、满意度、桌况、队列等），读取玩家输入的 Waiter 和 Chef 操作指令，并进行无效输入的重试校验。
+
+💡 建议将文件按功能分别存放在 enums、domain、staff、controller、ui 等 Package（包）中，这样目录结构会非常清晰！你希望我先为你写出前面几个基础实体类（如 Customer 和 Order）的完整 Java 代码吗？
+Q 我只需要写stage1就够了 你告诉我stage1按顺序从头开始写 我要写哪些文件名（或者说class或者有几个class要放在同一个文件里这样的
+A 在 Java 项目中，强烈建议每个 public class 或 public enum 都独立存放在一个单独的 .java 文件中（文件名必须与类名完全一致，例如 Customer 必须保存在 Customer.java 中）。不要把多个类写在同一个文件里，这样不仅符合 SC2002 的规范，也最有利于后续 Stage 2 和 Stage 3 的扩展。
+下面是 Stage 1 从头开始编写的完整文件名列表与包（Package）结构。我已按**“自底向上”（先写无依赖的基础类，再写核心逻辑，最后写 UI 入口）**的顺序为你排好序：
+
+📁 包结构与文件名清单（按编写顺序）
+1. enums 包（状态与指令枚举，不依赖任何类）
+CustomerStatus.java (public enum CustomerStatus)：定义顾客状态（WAITING_IN_QUEUE, SEATED, SERVED, READY_TO_PAY, PAID, LEFT_UNHAPPY）。
+OrderStatus.java (public enum OrderStatus)：定义订单状态（PENDING, IN_PREPARATION, READY, SERVED, PAID）。
+WaiterAction.java (public enum WaiterAction)：侍应生动作类型（SEAT, TAKE_ORDER, SERVE, WAIT）。
+ChefAction.java (public enum ChefAction)：厨师动作类型（COOK, WAIT）。
+2. domain 包（领域实体模型）
+MenuItem.java (public class MenuItem)：菜品类，包含名称、价格（单位为美分）与制作单位（Salad $9.00/1单位, Burger $15.00/1单位, Pasta $18.00/2单位）。
+Menu.java (public class Menu)：菜单类，管理 3 种菜品，并提供顾客自动点菜规则。
+Order.java (public class Order)：订单类，管理菜品、所需与已完成的制作单位及订单状态。
+Customer.java (public class Customer)：普通顾客类，记录顾客 ID、满意度（初始 100，等待/在座未送餐每回合扣 8 点） 及所点订单。
+Table.java (public class Table)：餐桌类（固定 2 张餐桌），记录占用状态与绑定的顾客。
+3. staff 包（员工角色体系）
+Staff.java (public abstract class Staff)：员工抽象基类，定义通用属性（姓名、本回合忙碌状态）。
+Waiter.java (public class Waiter extends Staff)：侍应生类，实现入座、取单、送餐任务（每回合限 1 次）。
+Chef.java (public class Chef extends Staff)：厨师类，实现对指定订单推进 1 个制作单位的任务。
+Cashier.java (public class Cashier extends Staff)：收银员类，实现每回合自动为最早就绪的顾客结账。
+4. controller 包（游戏控制器与回合流程）
+GameController.java (public class GameController)：核心逻辑类。
+维护 18 个回合、固定到达节点（第 1, 4, 7, 10, 13, 16 回合各到 1 人）。
+严格按顺序执行 6 个步骤（1. Arrivals -> 2. Manager choices -> 3. Kitchen & serving -> 4. Eating & payment -> 5. Waiting & abandonment -> 6. Result）。
+统计收入和平均满意度，并在第 18 回合评估胜利条件（付费人数 ≥ 4、收入 ≥ $45、平均满意度 ≥ 60）。
+5. ui 包（命令行界面与程序入口）
+RestaurantGameCLI.java (public class RestaurantGameCLI)：包含 public static void main(String[] args) 方法，负责显示回合状态、读取玩家键盘输入、输入校验与错误提示。
+
+💡 如果你准备好了，我们可以从第一步最基础的 enums（枚举类） 和 MenuItem.java / Customer.java 开始，我为你写出可以直接使用的 Java 源码！
+Q customerstatus怎么写
+
+A 在 Stage 1 中，CustomerStatus 是一个枚举类型（Enum），用来追踪顾客从进入餐厅到结账离开的整个生命周期状态。
+请在你的项目中新建包 enums，并在其中创建文件 CustomerStatus.java，可以直接使用以下 Java 代码：
+package enums;
+
+/**
+ * 顾客状态枚举类 (CustomerStatus)
+ * 记录顾客在 18 回合游戏过程中的生命周期阶段
+ */
+public enum CustomerStatus {
+    /** 在等待队列中等待侍应生安排入座 */
+    WAITING_IN_QUEUE,
+
+    /** 已在餐桌入座（等待点餐或等待厨师/侍应生上菜） */
+    SEATED,
+
+    /** 侍应生已将烹饪完成的菜品送达餐桌 */
+    SERVED,
+
+    /** 菜品送达后用餐满 1 回合，准备等待收银员结账 */
+    READY_TO_PAY,
+
+    /** 收银员已成功收账，顾客离店并释放餐桌 */
+    PAID,
+
+    /** 满意度降为 0，顾客放弃等待并直接离店（不付款） */
+    LEFT_UNHAPPY
+}
+
+各状态转换逻辑说明（对应游戏 6 个步骤）：
+到达（Step 1）：第 1, 4, 7, 10, 13, 16 回合顾客进入队列，初始状态为 WAITING_IN_QUEUE（满意度 100）。
+入座（Step 2）：侍应生安排入座后状态变为 SEATED。
+送餐（Step 3）：侍应生将 READY 状态的订单送达后，状态变为 SERVED。
+用餐（Step 4）：已送餐顾客用餐满 1 回合后变为 READY_TO_PAY。
+结账（Step 4）：收银员自动结账，状态变为 PAID，增加收入并清空餐桌。
+离开（Step 5）：在队列或餐桌中未送餐且满意度扣减至 0 的顾客，变为 LEFT_UNHAPPY 并直接离开。
+
+💡 下一步是编写另一个独立的枚举类 OrderStatus.java（定义订单的 PENDING, IN_PREPARATION, READY, SERVED, PAID 状态），需要我接着给你输出它的源码吗？
+Q 你enums包的那几个java每一个状态都中文备注解释一下 这个状态是干啥的
+
+
+
+A 没问题！以下是 enums 包中 4 个 Java 枚举文件 的完整源码。我在每一个枚举状态（Enum Constant）上方都添加了详细的中文注释，说明该状态的作用、触发条件以及在游戏回合规则中的逻辑。
+你可以直接复制并覆盖对应的 Java 文件：
+
+1. CustomerStatus.java
+定义顾客在游戏 18 个回合中的生命周期状态流转。
+package enums;
+
+/**
+ * 顾客生命周期状态枚举 (CustomerStatus)
+ */
+public enum CustomerStatus {
+    /**
+     * 在队列等待：顾客到达餐厅后加入等待队列。
+     * 初始满意度为 100，每回合未送餐会扣减 8 点满意度。
+     */
+    WAITING_IN_QUEUE,
+
+    /**
+     * 已入座：侍应生将其安排到空餐桌上。
+     * 此时等待侍应生取单，或等待厨师烹饪/侍应生送餐；每回合未送餐同样扣减 8 点满意度。
+     */
+    SEATED,
+
+    /**
+     * 已送餐：侍应生成功将烹饪完成（READY）的菜品送达餐桌。
+     * 此时满意度停止扣减，顾客开始用餐。
+     */
+    SERVED,
+
+    /**
+     * 准备结账：已送餐的顾客用餐满 1 个完整回合后进入此状态。
+     * 等待收银员自动处理结账（每回合收银员自动处理 1 位最早就绪的顾客）。
+     */
+    READY_TO_PAY,
+
+    /**
+     * 已支付：收银员成功收取账款，账款计入总收入，顾客离开餐厅并清空释放餐桌。
+     */
+    PAID,
+
+    /**
+     * 不满意离开：顾客在队列或餐桌等待期间满意度降至 0。
+     * 顾客直接离店且不付款，未完成的订单被取消，餐桌被释放。
+     */
+    LEFT_UNHAPPY
+}
+
+2. OrderStatus.java
+定义菜品订单从生成、烹饪到上菜和结账的状态流转。
+package enums;
+
+/**
+ * 订单状态枚举 (OrderStatus)
+ */
+public enum OrderStatus {
+    /**
+     * 待处理：侍应生刚为入座顾客完成点餐，订单已创建，但尚未开始烹饪（完成单位为 0）。
+     */
+    PENDING,
+
+    /**
+     * 烹饪中：厨师已对该订单推进了制作单位，但尚未达到菜品所需的总制作单位。
+     * （例如 Pasta 需要 2 个制作单位，厨师完成第 1 个单位后处于此状态）。
+     */
+    IN_PREPARATION,
+
+    /**
+     * 制作完成：厨师完成了菜品的最后一个制作单位。
+     * 注意：本回合刚制作完成的菜品，最快只能在下一个回合被侍应生送达。
+     */
+    READY,
+
+    /**
+     * 已送达：侍应生执行送餐任务，将 READY 状态的菜品送给顾客。
+     */
+    SERVED,
+
+    /**
+     * 已结清/已取消：收银员完成账款收取，或者顾客因满意度归零离店后订单被取消。
+     */
+    PAID
+}
+
+3. WaiterAction.java
+定义玩家在决策阶段（Step 2）为侍应生（Waiter）指派的任务指令。侍应生每回合最多执行 1 次任务。
+package enums;
+
+/**
+ * 侍应生可执行动作类型 (WaiterAction)
+ */
+public enum WaiterAction {
+    /**
+     * 安排入座：指派侍应生将等待队列中的 1 位顾客安排到一张空餐桌上。
+     */
+    SEAT,
+
+    /**
+     * 取单：指派侍应生为已入座且尚未点餐的 1 位顾客记录订单。
+     */
+    TAKE_ORDER,
+
+    /**
+     * 送餐：指派侍应生将 1 份已处于 READY 状态的菜品送达给对应顾客。
+     * （只能送上一回合或更早已经 READY 的菜品）。
+     */
+    SERVE,
+
+    /**
+     * 等待：本回合侍应生不执行任何操作。
+     */
+    WAIT
+}
+
+4. ChefAction.java
+定义玩家在决策阶段（Step 2）为厨师（Chef）指派的任务指令。厨师每回合最多推进 1 个制作单位。
+package enums;
+
+/**
+ * 厨师可执行动作类型 (ChefAction)
+ */
+public enum ChefAction {
+    /**
+     * 烹饪：指派厨师对指定订单推进 1 个制作单位。
+     * 厨师可以烹饪侍应生在本回合刚刚录入的新订单。
+     */
+    COOK,
+
+    /**
+     * 等待：本回合厨师不执行任何烹饪任务。
+     */
+    WAIT
+}
+
+💡 这些枚举类清晰划分了各实体的状态与动作职责，完全符合 SC2002 评分标准中对封装与领域设计的要求。如果在接入代码或查看其他 Class 时需要调整或补充解释，随时告诉我！
+Q 所以waiting in queue是一个计数还是一个状态只有1 0这样的？
+
+A 它是一个具体对象的状态（Enum 值），而不是简单的 0/1 计数器。
+在面向对象设计（OOP）中，每一个来到餐厅的顾客都是一个独立的 Customer 对象。
+为什么必须是对象的状态，而不能只是数字计数？
+每个顾客有独立的属性： 每个顾客都有自己的 ID、满意度（初始 100，每回合扣 8 点） 以及对应的 订单需求。如果只是用一个数字（例如 int queueCount = 2）记录人数，程序就无法知道“队列里的两个人分别叫什么 ID、他们的满意度各剩下多少、谁先到达的”。
+在代码中的具体运作方式：
+餐厅控制器中维护了一个列表集合：List<Customer> waitingQueue。
+顾客到达时（如第 1 回合）：创建一个全新的 Customer 实例，将其 status 属性设为 CustomerStatus.WAITING_IN_QUEUE，然后加入到 waitingQueue 列表中。
+侍应生安排入座时：从 waitingQueue 列表中取出指定的 Customer 对象，将其 status 修改为 CustomerStatus.SEATED，并放入餐桌。
+应对 Stage 2 的扩展需求： 作业后续会引入 VIP（满意度每回合扣 5 点）和 Critic（满意度每回合扣 12 点）。将 WAITING_IN_QUEUE 作为对象内部的状态，配合 List<Customer> 容器管理，才能准确追踪队里每一位不同类型顾客的实时满意度和状态变动。
+
+💡 需要我顺便帮你梳理一下 Customer 类与 GameController 队列列表之间的具体代码交互逻辑吗？
+Q 你像那个截图2026一样给我menuitem.java要写啥吧
+
+A 就像你在截图（截屏2026-10-27 14.15.39.png）中看到的 UML 类图一样，MenuItem.java 是一个标准的值对象（Value Object/Domain Model），用来封装菜单上每道菜品的核心数据。
+按作业要求，菜品价格需要使用**整数美分（integer cents）**存储，以避免浮点数精度误差。
+
+一、 MenuItem 的 UML 类图（类似截图中的结构）
++-------------------------------------------------+
+|                    MenuItem                     |
++-------------------------------------------------+
+| - name : String                                 |
+| - priceInCents : int                            |
+| - prepUnitsRequired : int                       |
++-------------------------------------------------+
+| + MenuItem(name: String, priceInCents: int,     |
+|            prepUnitsRequired: int)              |
+| + getName() : String                            |
+| + getPriceInCents() : int                       |
+| + getPrepUnitsRequired() : int                  |
+| + getFormattedPrice() : String                  |
+| + toString() : String                           |
++-------------------------------------------------+
+符号说明：
+- 代表 private 属性（严格封装）。
++ 代表 public 方法。
+
+二、 MenuItem.java 完整 Java 源码
+请在 domain 包下创建文件 MenuItem.java：
+package domain;
+
+/**
+ * 菜品类 (MenuItem)
+ * 代表菜单上的某一项菜品（如 Salad, Burger, Pasta）
+ */
+public class MenuItem {
+    // 1. 私有成员变量（Attributes）
+    private final String name;                // 菜品名称（如 "Salad"）
+    private final int priceInCents;           // 菜品价格（以美分表示，如 $9.00 为 900）
+    private final int prepUnitsRequired;      // 厨师烹饪所需的制作单位数（如 1 或 2）
+
+    /**
+     * 构造函数（Constructor）
+     * @param name 菜品名称
+     * @param priceInCents 价格（美分）
+     * @param prepUnitsRequired 所需制作单位数
+     */
+    public MenuItem(String name, int priceInCents, int prepUnitsRequired) {
+        this.name = name;
+        this.priceInCents = priceInCents;
+        this.prepUnitsRequired = prepUnitsRequired;
+    }
+
+    // 2. Getter 方法（获取私有变量的值）
+
+    public String getName() {
+        return name;
+    }
+
+    public int getPriceInCents() {
+        return priceInCents;
+    }
+
+    public int getPrepUnitsRequired() {
+        return prepUnitsRequired;
+    }
+
+    /**
+     * 将美分价格格式化为美元字符串（如 900 -> "$9.00"）
+     */
+    public String getFormattedPrice() {
+        return String.format("$%.2f", priceInCents / 100.0);
+    }
+
+    /**
+     * 重写 toString() 方法，方便控制台打印菜品信息
+     */
+    @Override
+    public String toString() {
+        return String.format("%s (%s, %d prep unit%s)",
+                name,
+                getFormattedPrice(),
+                prepUnitsRequired,
+                prepUnitsRequired > 1 ? "s" : "");
+    }
+}
+
+三、 属性与方法逐行解释
+属性（Fields）：
+name：菜品的名称，如 "Salad"、"Burger"、"Pasta"。
+priceInCents：价格（美分表示），例如 Salad 是 $9.00 则传入 900，Burger 是 $15.00 则传入 1500，Pasta 是 $18.00 则传入 1800。
+prepUnitsRequired：厨师制作该菜品所需的轮次/单位数，Salad 和 Burger 各需 1 单位，Pasta 需 2 单位。
+使用 final 修饰符：因为菜品的基础属性创建后不应该在运行中被随意修改，符合不变性（Immutability）原则。
+方法（Methods）：
+构造函数 MenuItem(...)：初始化上述三个基础属性。
+getFormattedPrice()：辅助 UI 展示，自动将 900 美分除以 100 转换成 "$9.00" 格式。
+toString()：打印格式如 Pasta ($18.00, 2 prep units)，可以直接用在 CLI 面板打印上。
+
+💡 下一步你需要写的是管理这些菜品的类 Menu.java（里面会用 MenuItem 实例化这三道菜），需要我现在把 Menu.java 的结构和代码也发给你吗？
+Q 带我看 Menu.java 的具体程序
+
+A 在 Stage 1 中，Menu.java（菜单类）负责管理餐厅可供点选的菜品列表，并包含“顾客自主选餐”的业务逻辑。
+根据作业要求：
+菜单包含 3 种基础菜品：Salad（$9.00，1 制作单位）、Burger（$15.00，1 制作单位）、Pasta（$18.00，2 制作单位）。
+顾客自主点餐规则：经理（玩家）不能帮顾客选菜；系统必须使用**明确的确定性规则（deterministic rule）**或种子随机数来为顾客选餐。
+
+一、 Menu 的 UML 类图结构
++-------------------------------------------------+
+|                      Menu                       |
++-------------------------------------------------+
+| - items : List<MenuItem>                        |
++-------------------------------------------------+
+| + Menu()                                        |
+| + getItems() : List<MenuItem>                   |
+| + selectFoodForCustomer(customerId: int)        |
+|   : MenuItem                                    |
++-------------------------------------------------+
+
+二、 Menu.java 完整 Java 源代码
+请在 domain 包下创建文件 Menu.java：
+package domain;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+/**
+ * 菜单类 (Menu)
+ * 负责维护餐厅的所有菜品，并执行“顾客自主选餐”逻辑
+ */
+public class Menu {
+    // 私有属性：存储菜单项列表（使用 List<MenuItem> 组合组合关系）
+    private final List<MenuItem> items;
+
+    /**
+     * 构造函数：初始化 Stage 1 的 3 种固定菜品
+     */
+    public Menu() {
+        items = new ArrayList<>();
+        // 价格以美分存储：$9.00 -> 900, $15.00 -> 1500, $18.00 -> 1800
+        items.add(new MenuItem("Salad", 900, 1));
+        items.add(new MenuItem("Burger", 1500, 1));
+        items.add(new MenuItem("Pasta", 1800, 2));
+    }
+
+    /**
+     * 获取不可修改的菜品列表（防止外部代码随意篡改菜单）
+     * @return 只读菜品列表
+     */
+    public List<MenuItem> getItems() {
+        return Collections.unmodifiableList(items);
+    }
+
+    /**
+     * 顾客自主选餐规则（确定性分配逻辑，符合作业 2.2 节要求）：
+     * 根据顾客 ID 轮询选菜：
+     * - Customer #1 -> Salad ($9.00, 1 unit)
+     * - Customer #2 -> Burger ($15.00, 1 unit)
+     * - Customer #3 -> Pasta ($18.00, 2 units)
+     * - Customer #4 -> Salad ... 以此类推
+     *
+     * @param customerId 顾客的 ID
+     * @return 顾客所选的 MenuItem 对象
+     */
+    public MenuItem selectFoodForCustomer(int customerId) {
+        int index = (customerId - 1) % items.size();
+        return items.get(index);
+    }
+}
+
+三、 代码核心亮点解析
+组合关系（Composition）：
+Menu 类内部持有一个 List<MenuItem> 列表。这体现了面向对象中的“组合”原则，菜单包含多个菜品对象。
+防防御性封装（Defensive Encapsulation）：
+getItems() 返回了 Collections.unmodifiableList(items)，确保 UI 或 Controller 只能读取菜单，不能从外部随意添加或删除菜品。
+符合确定性点餐规范：
+selectFoodForCustomer(int customerId) 使用 (customerId - 1) % items.size() 的公式。这样每次测试运行的选餐顺序完全一致，方便你生成**可复现（reproducible）**的胜利和失败运行测试记录。
+
+💡 接下来我们需要看 Order.java（订单类，将菜品、制作进度和订单状态结合在一起）还是 Customer.java（顾客类）？告诉我你想看哪一个！
+Q 查看 Order.java 的具体程序
+
+A 在餐厅管理游戏中，Order.java（订单类）是连接顾客需求、厨房烹饪和侍应生送餐的核心枢纽。它负责记录菜品种类、追踪制作进度（如 Pasta 需要 2 个制作单位），以及维护订单从 PENDING 到 READY 再到 SERVED 的完整生命周期。
+
+一、 Order 的 UML 类图结构
+类似于标准的 OOP 实体设计，Order 类包含私有成员变量、构造函数以及用于控制制作进度的方法：
++-------------------------------------------------+
+|                      Order                      |
++-------------------------------------------------+
+| - orderId : int                                 |
+| - menuItem : MenuItem                           |
+| - prepUnitsCompleted : int                      |
+| - status : OrderStatus                          |
++-------------------------------------------------+
+| + Order(orderId: int, menuItem: MenuItem)       |
+| + getOrderId() : int                            |
+| + getMenuItem() : MenuItem                      |
+| + getPrepUnitsCompleted() : int                 |
+| + getPrepUnitsRequired() : int                  |
+| + getStatus() : OrderStatus                     |
+| + setStatus(status: OrderStatus) : void         |
+| + advancePreparation() : void                   |
+| + isFullyPrepared() : boolean                   |
+| + toString() : String                           |
++-------------------------------------------------+
+
+二、 Order.java 完整 Java 源代码
+请在 domain 包下创建文件 Order.java：
+package domain;
+
+import enums.OrderStatus;
+
+/**
+ * 订单类 (Order)
+ * 记录订单编号、关联菜品、已完成的制作单位以及当前订单状态
+ */
+public class Order {
+    // 1. 私有属性 (Encapsulated Attributes)
+    private final int orderId;             // 订单唯一编号
+    private final MenuItem menuItem;       // 绑定的菜品 (如 Salad, Burger, Pasta)
+    private int prepUnitsCompleted;        // 厨师已推进的制作单位数 (初始为 0)
+    private OrderStatus status;            // 当前订单状态
+
+    /**
+     * 构造函数：当侍应生执行 TAKE_ORDER 时创建订单
+     * @param orderId 订单编号
+     * @param menuItem 顾客选择的菜品
+     */
+    public Order(int orderId, MenuItem menuItem) {
+        this.orderId = orderId;
+        this.menuItem = menuItem;
+        this.prepUnitsCompleted = 0;
+        this.status = OrderStatus.PENDING; // 初始状态为待处理
+    }
+
+    // 2. Getter 与 Setter 方法
+
+    public int getOrderId() {
+        return orderId;
+    }
+
+    public MenuItem getMenuItem() {
+        return menuItem;
+    }
+
+    public int getPrepUnitsCompleted() {
+        return prepUnitsCompleted;
+    }
+
+    /**
+     * 获取该菜品所需的总制作单位数（例如 Salad 需 1 个单位，Pasta 需 2 个单位）
+     */
+    public int getPrepUnitsRequired() {
+        return menuItem.getPrepUnitsRequired();
+    }
+
+    public OrderStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(OrderStatus status) {
+        this.status = status;
+    }
+
+    /**
+     * 厨师烹饪时调用：推进 1 个制作单位，并更新订单状态
+     */
+    public void advancePreparation() {
+        if (prepUnitsCompleted < getPrepUnitsRequired()) {
+            prepUnitsCompleted++;
+
+            // 刚开始烹饪时，状态变为 IN_PREPARATION
+            if (prepUnitsCompleted == 1 && status == OrderStatus.PENDING) {
+                status = OrderStatus.IN_PREPARATION;
+            }
+
+            // 当推进到最后一个制作单位时，订单自动变为 READY
+            if (prepUnitsCompleted >= getPrepUnitsRequired()) {
+                status = OrderStatus.READY;
+            }
+        }
+    }
+
+    /**
+     * 判断订单是否已完全制作完成
+     */
+    public boolean isFullyPrepared() {
+        return prepUnitsCompleted >= getPrepUnitsRequired();
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Order #%d [%s] (%d/%d units) - %s",
+                orderId,
+                menuItem.getName(),
+                prepUnitsCompleted,
+                getPrepUnitsRequired(),
+                status);
+    }
+}
+
+三、 状态转换与规则详解
+组合关系与制作单位：
+Order 类组合了 MenuItem 类。当顾客点选 Salad 或 Burger 时，所需制作单位为 1；点选 Pasta 时，所需制作单位为 2。
+状态流转机制（advancePreparation()）：
+初始阶段：侍应生取单后，状态为 PENDING（已完成 0 单位）。
+烹饪阶段：厨师执行 COOK 操作，prepUnitsCompleted 加 1。状态由 PENDING 变为 IN_PREPARATION。
+完成阶段：当 prepUnitsCompleted 达到所需的总单位数时，订单状态自动变为 READY。
+送餐限制与规则：
+按照规则，本回合刚变为 READY 的菜品，侍应生最快只能在下一个回合进行送达（SERVE），送达后状态变为 SERVED。
+
+💡 下一步我们可以看 Customer.java（顾客类，记录满意度扣减与订单绑定）或者 Table.java（餐桌类），你想接着看哪一个？
+Q 查看 Customer.java 的具体程序
+
+A Customer.java 是游戏的核心领域模型之一，负责追踪顾客的唯一标识、实时满意度、当前状态以及对应的菜品订单。
+根据作业规范，普通顾客（Regular Customer）到达时的初始满意度为 100；在未送餐前，每轮等待或在座会扣除 8 点满意度；当满意度跌至 0 时，顾客会放弃等待并离店（状态变为 LEFT_UNHAPPY）。
+
+一、 Customer 的 UML 类图结构
++-------------------------------------------------+
+|                    Customer                     |
++-------------------------------------------------+
+| - id : int                                      |
+| - satisfaction : int                            |
+| - status : CustomerStatus                       |
+| - order : Order                                 |
+| - turnServed : int                              |
++-------------------------------------------------+
+| + Customer(id: int)                             |
+| + getId() : int                                 |
+| + getSatisfaction() : int                       |
+| + getStatus() : CustomerStatus                  |
+| + setStatus(status: CustomerStatus) : void      |
+| + getOrder() : Order                            |
+| + setOrder(order: Order) : void                 |
+| + getTurnServed() : int                         |
+| + setTurnServed(turnServed: int) : void         |
+| + decreaseSatisfaction(points: int) : void      |
+| + isUnhappyAndLeaves() : boolean                |
+| + toString() : String                           |
++-------------------------------------------------+
+
+二、 Customer.java 完整 Java 源代码
+请在 domain 包下创建文件 Customer.java：
+package domain;
+
+import enums.CustomerStatus;
+
+/**
+ * 顾客类 (Customer)
+ * 记录顾客 ID、满意度、生命周期状态及绑定的订单信息
+ */
+public class Customer {
+    // 1. 私有成员变量 (封装)
+    private final int id;               // 顾客编号 (如 Customer #1, #2)
+    private int satisfaction;           // 实时满意度 (初始 100)
+    private CustomerStatus status;      // 当前状态
+    private Order order;                // 绑定的订单对象 (未点餐前为 null)
+    private int turnServed;             // 记录送达时的回合数 (用于判定用餐时长)
+
+    /**
+     * 构造函数：顾客生成时自动加入等待队列
+     * @param id 顾客编号
+     */
+    public Customer(int id) {
+        this.id = id;
+        this.satisfaction = 100; // 初始满意度固定为 100
+        this.status = CustomerStatus.WAITING_IN_QUEUE;
+        this.order = null;
+        this.turnServed = -1;
+    }
+
+    // 2. Getter 与 Setter 方法
+
+    public int getId() {
+        return id;
+    }
+
+    public int getSatisfaction() {
+        return satisfaction;
+    }
+
+    public CustomerStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(CustomerStatus status) {
+        this.status = status;
+    }
+
+    public Order getOrder() {
+        return order;
+    }
+
+    public void setOrder(Order order) {
+        this.order = order;
+    }
+
+    public int getTurnServed() {
+        return turnServed;
+    }
+
+    public void setTurnServed(int turnServed) {
+        this.turnServed = turnServed;
+    }
+
+    /**
+     * 扣减满意度（每回合在队列或在座未送餐扣 8 点，最低降至 0）
+     * @param points 扣除的点数
+     */
+    public void decreaseSatisfaction(int points) {
+        this.satisfaction = Math.max(0, this.satisfaction - points);
+    }
+
+    /**
+     * 判断顾客是否因为满意度降至 0 而放弃等待离店
+     */
+    public boolean isUnhappyAndLeaves() {
+        return satisfaction <= 0;
+    }
+
+    @Override
+    public String toString() {
+        String orderInfo = (order == null) ? "No Order" : order.getMenuItem().getName() + " (" + order.getStatus() + ")";
+        return String.format("Customer #%d [Sat: %d, Status: %s, Order: %s]",
+                id, satisfaction, status, orderInfo);
+    }
+}
+
+三、 核心设计要点
+满意度扣减逻辑（decreaseSatisfaction）：
+在 Step 5（Waiting and abandonment）阶段，未送餐的顾客扣除 8 点满意度。使用 Math.max(0, ...) 保证满意度不会出现负数。
+送餐回合标记（turnServed）：
+记录顾客被送餐的具体回合，这样 Step 4 才能判断“已送餐满 1 个完整回合”的顾客何时转为 READY_TO_PAY 准备结账。
+状态与订单联动：
+刚生成时 order 为 null；侍应生取单后将 Order 对象绑定给顾客，并随着烹饪和送餐不断更新其状态。
+
+💡 接下来是查看 Table.java（餐桌类）还是员工体系的基类 Staff.java？告诉我你想先看哪一个！
+Q 绑定的订单对象是什么
+
+A 在 Customer 类中，private Order order; 代表的是该顾客在餐厅中所点选的菜品订单实体（对象引用），这是面向对象设计中典型的关联关系（Association）。
+简单来说，它记录了**“这位顾客点了什么菜、这道菜做好了没有”**的完整信息。
+
+一、 绑定的 Order 对象包含什么？
+当 Order 对象被创建并绑定给顾客时，它内部封装了以下核心数据：
+订单编号（orderId）：例如 Order #1, Order #2。
+具体菜品（menuItem）：包含菜品名称、价格（美分）和所需制作单位（如 Salad $9.00/1单位、Pasta $18.00/2单位）。
+制作进度（prepUnitsCompleted）：厨师已烹饪的单位数（如 Pasta 需 2 个单位，目前完成了 1 个单位）。
+订单状态（status）：当前处于 PENDING（待烹饪）、IN_PREPARATION（烹饪中）、READY（已做完）、SERVED（已送达）还是 PAID（已结账）。
+
+二、 订单对象在游戏回合中的生命周期
+在 18 个回合的流转中，这个绑定的 order 对象的变动过程如下：
+1. 初始阶段（未点餐）： 顾客刚加入队列或刚入座时，order 属性为 null（代表尚未点餐）。
+2. 侍应生取单（TAKE_ORDER）： 当侍应生为已入座的顾客取单时，系统根据顾客自主选餐规则生成一个新的 Order 对象，并通过 customer.setOrder(newOrder) 将其绑定到该顾客身上。
+3. 厨师烹饪（COOK）： 厨师对订单推进制作单位，当完成最后一个制作单位时，订单状态自动变为 READY。
+4. 侍应生送餐（SERVE）： 侍应生检查顾客绑定的 order 是否处于 READY 状态，确认后将其送达，订单状态变为 SERVED。
+5. 结账（Payment）： 收银员通过 customer.getOrder().getMenuItem().getPriceInCents() 获取这笔订单的价格，将金额计入总收入，并将订单标记为 PAID。
+
+三、 为什么要直接绑定在 Customer 内部？
+符合面向对象封装（Encapsulation）：“谁点的菜，由谁持有”。直接把 Order 绑定在 Customer 对象内部，可以避免在控制器中使用各种复杂的 Map 或数组去匹配“哪位顾客点了哪道菜”。
+方便状态与满意度联动：当顾客因为等待太久满意度降为 0 离店时，程序只需通过 customer.getOrder() 就能立刻找到对应的未完成订单并予以取消。
+
+💡 接下来我们看 Table.java（餐桌类，记录餐桌与顾客的绑定关系）的代码实现，可以吗？
+Q 记录送达时的回合数是什么
+
+A turnServed（记录送达时的回合数）是一个整型变量（比如 1、2、3...），专门用来记录侍应生把菜送达这位顾客餐桌时的那个具体回合数。
+
+为什么需要记录它？
+作业规则规定：顾客收到菜品后，必须用餐满 1 个完整回合，之后才能进入结账状态（READY_TO_PAY）。
+如果不记录送达时的回合数，程序就无法区分**“这位顾客是本回合刚拿到菜”还是“上一回合就已经拿到菜并吃完了”**。
+
+代码中的具体运作逻辑
+假设侍应生在 第 5 回合 把菜送到了顾客桌上：
+第 5 回合（送餐时）： 侍应生执行 SERVE，顾客状态变为 SERVED，系统同时记录： customer.setTurnServed(5);
+第 5 回合的 Step 4（结账阶段）： 程序判断 turnServed (5) < currentTurn (5) 不成立。 -> 说明顾客这回合才刚拿到菜，还在吃饭，不能结账。
+第 6 回合的 Step 4（结账阶段）： 游戏推进到第 6 回合（currentTurn = 6），程序判断 turnServed (5) < currentTurn (6) 成立！ -> 说明顾客已经在上一回合吃完了饭，状态自动更新为 READY_TO_PAY（准备等待收银员结账）。
+
+简而言之，它就是个时间戳，确保顾客不会“刚拿到菜瞬间就被收银员收钱赶走”！
+Qpublic String toString() {
+String orderInfo = (order == null) ? "No Order" : order.getMenuItem().getName() + " (" + order.getStatus() + ")";
+return String.format("Customer #%d [Sat: %d, Status: %s, Order: %s]",
+id, satisfaction, status, orderInfo);
+}这个是干什么
+A 这段代码是 Java 中重写的 toString() 方法，它的主要作用是将一个 Customer（顾客）对象转化成人类能看懂的文本字符串。
+如果不写这个方法，直接用 System.out.println(customer) 打印时，控制台只会输出一串看不懂的内存地址（例如 domain.Customer@15db9742）；而重写后，就能在命令行界面（CLI）中直接打印出清晰的顾客状态面板。
+
+代码逐行拆解说明：
+1. 判断订单信息的安全处理（三元运算符）：
+String orderInfo = (order == null) ? "No Order" : order.getMenuItem().getName() + " (" + order.getStatus() + ")";
+为什么需要这样判断？ 因为顾客刚进店时还没有点菜，此时 order 变量是 null。如果直接去调用 order.getMenuItem()，程序就会抛出空指针异常（NullPointerException）报错崩溃。
+逻辑过程：
+如果还没点菜（order == null）：orderInfo 显示为 "No Order"。
+如果已经点菜：就提取出菜名和订单状态，拼接成如 "Salad (PENDING)" 或 "Pasta (READY)" 的文本。
+
+2. 格式化拼接最终字符串：
+return String.format("Customer #%d [Sat: %d, Status: %s, Order: %s]",
+        id, satisfaction, status, orderInfo);
+使用 String.format 将顾客的所有关键属性填入对应的占位符中：
+%d 填入顾客 ID（如 #1）与满意度数值（如 100）。
+%s 填入当前顾客状态（如 WAITING_IN_QUEUE）以及上面拼好的订单信息。
+
+控制台实际打印出来的效果：
+顾客刚到达、还在排队时： Customer #1 [Sat: 100, Status: WAITING_IN_QUEUE, Order: No Order]
+侍应生为其取单后： Customer #1 [Sat: 92, Status: SEATED, Order: Salad (PENDING)]
+菜品做完送达后： Customer #1 [Sat: 76, Status: SERVED, Order: Salad (SERVED)]
+这样在每回合开始输出游戏状态面板时，玩家就能一目了然地看到队里和桌上每位顾客的实时满意度与订单进度了。
+Q 查看 GameController.java 的具体程序
+
+A GameController.java 是整个 Stage 1 的核心控制类（Controller）。它负责维护 18 个回合的流转，管理游戏地图资源（2 张餐桌、1 名侍应生、1 名厨师、1 名收银员），并严格按顺序驱动每回合的 6 个标准步骤（从顾客到达、玩家决策、厨房烹饪/送餐，到自动结账、满意度扣减与胜负结算）。
+
+一、 GameController 的 UML 类图结构
++-----------------------------------------------------------------------+
+|                            GameController                             |
++-----------------------------------------------------------------------+
+| - currentTurn : int = 1                                               |
+| - totalRevenueInCents : int = 0                                       |
+| - nextCustomerId : int = 1                                            |
+| - nextOrderId : int = 1                                               |
+| - waitingQueue : List<Customer>                                       |
+| - tables : List<Table>                                                |
+| - paidCustomers : List<Customer>                                      |
+| - allCustomersCreated : List<Customer>                                |
+| - activeOrders : List<Order>                                          |
+| - menu : Menu                                                         |
+| - waiter : Waiter                                                     |
+| - chef : Chef                                                         |
+| - cashier : Cashier                                                   |
++-----------------------------------------------------------------------+
+| + GameController()                                                    |
+| + getCurrentTurn() : int                                              |
+| + getTotalRevenueInCents() : int                                      |
+| + getFormattedRevenue() : String                                      |
+| + getAverageSatisfaction() : double                                   |
+| + getFormattedAverageSatisfaction() : String                          |
+| + step1_Arrivals() : void                                             |
+| + validateWaiterSeat(customerId: int, tableId: int) : boolean         |
+| + validateWaiterTakeOrder(customerId: int) : boolean                  |
+| + validateWaiterServe(orderId: int) : boolean                         |
+| + validateChefCook(orderId: int) : boolean                            |
+| + executeTurnActions(...) : void                                      |
+| + step4_EatingAndPayment() : void                                     |
+| + step5_WaitingAndAbandonment() : void                                |
+| + advanceTurn() : void                                                |
+| + isGameOver() : boolean                                              |
+| + isVictory() : boolean                                               |
++-----------------------------------------------------------------------+
+
+二、 GameController.java 完整 Java 源代码
+请在 controller 包下创建文件 GameController.java：
+package controller;
+
+import domain.*;
+import enums.*;
+import staff.*;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+/**
+ * 游戏核心控制器 (GameController)
+ * 负责掌控 18 个回合的进度流转以及每回合 6 个执行步骤
+ */
+public class GameController {
+    // 基础参数与胜利目标常量定义
+    public static final int MAX_TURNS = 18;                     // 最大回合数 18
+    public static final int TABLE_COUNT = 2;                    // 2 张餐桌
+    public static final int TARGET_PAID_CUSTOMERS = 4;          // 目标结账人数 >= 4
+    public static final int TARGET_REVENUE_CENTS = 4500;        // 目标总收入 >= $45.00 (4500 美分)
+    public static final double TARGET_AVG_SATISFACTION = 60.0;  // 目标平均满意度 >= 60.0
+
+    // 运行状态与自增编号
+    private int currentTurn;
+    private int totalRevenueInCents;
+    private int nextCustomerId;
+    private int nextOrderId;
+
+    // 容器列表 (集合管理)
+    private final List<Customer> waitingQueue;       // 等待队列
+    private final List<Table> tables;                 // 2 张餐桌列表
+    private final List<Customer> paidCustomers;       // 已成功付费离开的顾客
+    private final List<Customer> allCustomersCreated; // 所有已产生的顾客
+    private final List<Order> activeOrders;           // 厨房与餐厅活动中的订单
+
+    // 员工与菜单组件
+    private final Menu menu;
+    private final Waiter waiter;
+    private final Chef chef;
+    private final Cashier cashier;
+
+    /**
+     * 构造函数：初始化游戏地图、员工与数据容器
+     */
+    public GameController() {
+        this.currentTurn = 1;
+        this.totalRevenueInCents = 0;
+        this.nextCustomerId = 1;
+        this.nextOrderId = 1;
+
+        this.waitingQueue = new ArrayList<>();
+        this.tables = new ArrayList<>();
+        for (int i = 1; i <= TABLE_COUNT; i++) {
+            tables.add(new Table(i));
+        }
+
+        this.paidCustomers = new ArrayList<>();
+        this.allCustomersCreated = new ArrayList<>();
+        this.activeOrders = new ArrayList<>();
+
+        this.menu = new Menu();
+        this.waiter = new Waiter();
+        this.chef = new Chef();
+        this.cashier = new Cashier();
+    }
+
+    // =========================================================================
+    // 数据查询与统计方法
+    // =========================================================================
+
+    public int getCurrentTurn() { return currentTurn; }
+    public int getTotalRevenueInCents() { return totalRevenueInCents; }
+
+    /**
+     * 获取格式化的收入字符串 (如 "$45.00")
+     */
+    public String getFormattedRevenue() {
+        return String.format("$%.2f", totalRevenueInCents / 100.0);
+    }
+
+    /**
+     * 计算已付费顾客的平均满意度
+     */
+    public double getAverageSatisfaction() {
+        if (paidCustomers.isEmpty()) return -1.0;
+        int sum = 0;
+        for (Customer c : paidCustomers) {
+            sum += c.getSatisfaction();
+        }
+        return (double) sum / paidCustomers.size();
+    }
+
+    public String getFormattedAverageSatisfaction() {
+        double avg = getAverageSatisfaction();
+        return (avg < 0) ? "N/A" : String.format("%.1f", avg);
+    }
+
+    public List<Customer> getWaitingQueue() { return waitingQueue; }
+    public List<Table> getTables() { return tables; }
+    public List<Customer> getPaidCustomers() { return paidCustomers; }
+
+    // =========================================================================
+    // 回合 6 个步骤核心控制逻辑
+    // =========================================================================
+
+    /**
+     * 步骤 1: Arrivals (顾客到达)
+     * 在第 1, 4, 7, 10, 13, 16 回合各到达 1 位普通顾客 (初始满意度 100)
+     */
+    public void step1_Arrivals() {
+        // 重置本回合员工的忙碌状态
+        waiter.resetTurn();
+        chef.resetTurn();
+        cashier.resetTurn();
+
+        if (currentTurn == 1 || currentTurn == 4 || currentTurn == 7 ||
+            currentTurn == 10 || currentTurn == 13 || currentTurn == 16) {
+            Customer c = new Customer(nextCustomerId++);
+            waitingQueue.add(c);
+            allCustomersCreated.add(c);
+        }
+    }
+
+    // 步骤 2 校验辅助函数：验证侍应生安排入座是否合法
+    public boolean validateWaiterSeat(int customerId, int tableId) {
+        Customer target = getCustomerInQueueById(customerId);
+        Table t = getTableById(tableId);
+        return target != null && t != null && t.isAvailable();
+    }
+
+    // 步骤 2 校验辅助函数：验证侍应生取单是否合法
+    public boolean validateWaiterTakeOrder(int customerId) {
+        Customer c = getSeatedCustomerById(customerId);
+        return c != null && c.getOrder() == null;
+    }
+
+    // 步骤 2 校验辅助函数：验证侍应生送餐是否合法
+    public boolean validateWaiterServe(int orderId) {
+        Order o = getOrderById(orderId);
+        if (o == null || o.getStatus() != OrderStatus.READY) return false;
+        Customer c = getCustomerByOrder(o);
+        // 本回合刚制作完成的菜品，必须等到下一个回合才能被送达
+        return c != null && c.getStatus() == CustomerStatus.SEATED;
+    }
+
+    // 步骤 2 校验辅助函数：验证厨师烹饪是否合法
+    public boolean validateChefCook(int orderId) {
+        Order o = getOrderById(orderId);
+        return o != null && (o.getStatus() == OrderStatus.PENDING || o.getStatus() == OrderStatus.IN_PREPARATION);
+    }
+
+    /**
+     * 步骤 2: Manager Choices (执行玩家决策)
+     */
+    public void executeTurnActions(WaiterAction wAction, Integer wTargetId, Integer wTableId, ChefAction cAction, Integer cOrderId) {
+        // 执行侍应生任务 (侍应生在 Step 3 厨房前先行动)
+        if (wAction == WaiterAction.SEAT) {
+            Customer c = getCustomerInQueueById(wTargetId);
+            Table t = getTableById(wTableId);
+            waiter.seatCustomer(c, t);
+            waitingQueue.remove(c);
+        } else if (wAction == WaiterAction.TAKE_ORDER) {
+            Customer c = getSeatedCustomerById(wTargetId);
+            Order o = waiter.takeOrder(c, menu, nextOrderId++);
+            if (o != null) activeOrders.add(o);
+        } else if (wAction == WaiterAction.SERVE) {
+            Order o = getOrderById(wTargetId);
+            Customer c = getCustomerByOrder(o);
+            waiter.serveOrder(c, currentTurn);
+        }
+
+        // 执行厨师任务 (厨师可直接烹饪侍应生在本回合刚刚录入的新订单)
+        if (cAction == ChefAction.COOK) {
+            Order o = getOrderById(cOrderId);
+            chef.cookOrder(o);
+        }
+    }
+
+    /**
+     * 步骤 4: Eating & Payment (用餐与自动结账)
+     */
+    public void step4_EatingAndPayment() {
+        // 上一回合或更早拿到菜的顾客，在本回合完成 1 个完整回合的用餐，状态变为 READY_TO_PAY
+        for (Customer c : allCustomersCreated) {
+            if (c.getStatus() == CustomerStatus.SERVED && c.getTurnServed() < currentTurn) {
+                c.setStatus(CustomerStatus.READY_TO_PAY);
+            }
+        }
+
+        // 收银员每回合自动为最早就绪的 1 位顾客结账
+        Customer toPay = null;
+        for (Customer c : allCustomersCreated) {
+            if (c.getStatus() == CustomerStatus.READY_TO_PAY) {
+                toPay = c;
+                break;
+            }
+        }
+
+        if (toPay != null) {
+            Table t = getTableByCustomer(toPay);
+            int paid = cashier.processPayment(toPay, t);
+            totalRevenueInCents += paid;
+            paidCustomers.add(toPay);
+            if (toPay.getOrder() != null) activeOrders.remove(toPay.getOrder());
+        }
+    }
+
+    /**
+     * 步骤 5: Waiting & Abandonment (满意度扣减与未送餐离店处理)
+     */
+    public void step5_WaitingAndAbandonment() {
+        // 回合结束时，队列中或在座未送餐的顾客扣除 8 点满意度
+        for (Customer c : allCustomersCreated) {
+            if (c.getStatus() == CustomerStatus.WAITING_IN_QUEUE || c.getStatus() == CustomerStatus.SEATED) {
+                c.decreaseSatisfaction(8);
+            }
+        }
+
+        // 队列中满意度跌至 0 的顾客放弃等待离店
+        Iterator<Customer> qIter = waitingQueue.iterator();
+        while (qIter.hasNext()) {
+            Customer c = qIter.next();
+            if (c.isUnhappyAndLeaves()) {
+                c.setStatus(CustomerStatus.LEFT_UNHAPPY);
+                qIter.remove();
+            }
+        }
+
+        // 餐桌上满意度跌至 0 的顾客离店，取消订单并清空释放餐桌
+        for (Table t : tables) {
+            if (!t.isAvailable()) {
+                Customer c = t.getOccupiedCustomer();
+                if (c.isUnhappyAndLeaves()) {
+                    c.setStatus(CustomerStatus.LEFT_UNHAPPY);
+                    if (c.getOrder() != null) {
+                        c.getOrder().setStatus(OrderStatus.PAID);
+                        activeOrders.remove(c.getOrder());
+                    }
+                    t.releaseTable();
+                }
+            }
+        }
+    }
+
+    // =========================================================================
+    // 回合与胜负判定方法
+    // =========================================================================
+
+    public void advanceTurn() { currentTurn++; }
+    public boolean isGameOver() { return currentTurn > MAX_TURNS; }
+
+    /**
+     * 胜负条件判定：
+     * 必须满足：付费人数 >= 4 AND 收入 >= $45.00 AND 平均满意度 >= 60.0
+     */
+    public boolean isVictory() {
+        return paidCustomers.size() >= TARGET_PAID_CUSTOMERS &&
+               totalRevenueInCents >= TARGET_REVENUE_CENTS &&
+               getAverageSatisfaction() >= TARGET_AVG_SATISFACTION;
+    }
+
+    // =========================================================================
+    // 辅助查找函数
+    // =========================================================================
+
+    public Table getTableById(int id) {
+        for (Table t : tables) if (t.getTableId() == id) return t;
+        return null;
+    }
+
+    public Customer getCustomerInQueueById(int id) {
+        for (Customer c : waitingQueue) if (c.getId() == id) return c;
+        return null;
+    }
+
+    public Customer getSeatedCustomerById(int id) {
+        for (Table t : tables) {
+            if (!t.isAvailable() && t.getOccupiedCustomer().getId() == id) return t.getOccupiedCustomer();
+        }
+        return null;
+    }
+
+    public Order getOrderById(int id) {
+        for (Order o : activeOrders) if (o.getOrderId() == id) return o;
+        return null;
+    }
+
+    public Customer getCustomerByOrder(Order order) {
+        for (Customer c : allCustomersCreated) if (c.getOrder() == order) return c;
+        return null;
+    }
+
+    public Table getTableByCustomer(Customer c) {
+        for (Table t : tables) if (!t.isAvailable() && t.getOccupiedCustomer() == c) return t;
+        return null;
+    }
+}
+
+三、 核心流转与规则要点说明
+顾客固定到达机制 (step1_Arrivals)：
+按照规则，只有在第 1, 4, 7, 10, 13, 16 回合的开头，才会各产生 1 位新的普通顾客（初始满意度 100）并加入等待队列。
+侍应生与厨房的行动次序 (executeTurnActions)：
+侍应生先行动，厨师后行动。如果侍应生在本回合执行了 TAKE_ORDER 取单，厨师紧接着就可以在同回合对该新订单执行 COOK 推进制作单位。
+送餐时效限制 (validateWaiterServe)：
+厨师在本回合制作完成（READY）的菜品，侍应生最快只能在下一个回合执行 SERVE 送达。
+用餐与自动结账 (step4_EatingAndPayment)：
+菜品送达后，顾客必须用餐满 1 个完整回合才能变成 READY_TO_PAY。收银员每回合自动为最早处于 READY_TO_PAY 状态的 1 位顾客完成结账并释放餐桌。
+满意度与离开机制 (step5_WaitingAndAbandonment)：
+处于队列中或已入座但未送餐的顾客，每回合结束时扣除 8 点满意度；跌至 0 时放弃等待离店（不付款），并自动清空餐桌。
+胜利目标判定 (isVictory)：
+满 18 个回合后，系统自动检查是否同时满足：付费人数 \(\ge 4\) 人、总收入 \(\ge $45.00\)、已付费顾客平均满意度 \(\ge 60.0\)。
+
+💡 接下来是查看 RestaurantGameCLI.java（命令行交互入口），还是看 Staff 员工类体系？随时告诉我！
+Q 我现在domain里面是customer menuitem order对吧 你先把domain里面的都说完？
+
+A 在 Stage 1 的 domain（领域模型）包中，除了你提到的 Customer、MenuItem 和 Order 之外，还包含 Menu（菜单类）和 Table（餐桌类），一共是 5 个 Class。
+之前我们已经详细讲解了 MenuItem、Menu、Order 和 Customer，现在我们把 domain 包里最后一个核心类 Table.java 详细讲完。
+
+Table.java（餐桌类）具体程序
+根据作业规范，基础设定固定提供 2 张餐桌。Table 类采用面向对象中的聚合/关联关系，用来追踪每张餐桌的编号、当前是否空闲，以及桌上绑定的 Customer 对象。
+1. Table 的 UML 类图结构
++-------------------------------------------------+
+|                      Table                      |
++-------------------------------------------------+
+| - tableId : int                                 |
+| - occupiedCustomer : Customer                   |
++-------------------------------------------------+
+| + Table(tableId: int)                           |
+| + getTableId() : int                            |
+| + getOccupiedCustomer() : Customer              |
+| + isAvailable() : boolean                       |
+| + seatCustomer(customer: Customer) : void       |
+| + releaseTable() : void                         |
+| + toString() : String                           |
++-------------------------------------------------+
+
+2. Table.java 完整 Java 源代码
+请在 domain 包下创建文件 Table.java：
+package domain;
+
+/**
+ * 餐桌类 (Table)
+ * 代表餐厅中的一张餐桌，负责维护餐桌编号及绑定的顾客对象
+ */
+public class Table {
+    // 1. 私有成员变量 (封装)
+    private final int tableId;             // 餐桌编号 (如 Table 1, Table 2)
+    private Customer occupiedCustomer;     // 当前入座的顾客对象 (无人入座时为 null)
+
+    /**
+     * 构造函数：初始化餐桌，默认状态为空闲
+     * @param tableId 餐桌编号
+     */
+    public Table(int tableId) {
+        this.tableId = tableId;
+        this.occupiedCustomer = null; // 初始时餐桌为空
+    }
+
+    // 2. Getter 与状态查询方法
+
+    public int getTableId() {
+        return tableId;
+    }
+
+    public Customer getOccupiedCustomer() {
+        return occupiedCustomer;
+    }
+
+    /**
+     * 判断餐桌当前是否空闲可用
+     * @return 若无顾客占用则返回 true
+     */
+    public boolean isAvailable() {
+        return occupiedCustomer == null;
+    }
+
+    /**
+     * 安排顾客入座
+     * @param customer 被指派入座的顾客对象
+     */
+    public void seatCustomer(Customer customer) {
+        this.occupiedCustomer = customer;
+    }
+
+    /**
+     * 清空并释放餐桌（顾客结账付款离开或满意度归零离店时调用）
+     */
+    public void releaseTable() {
+        this.occupiedCustomer = null;
+    }
+
+    @Override
+    public String toString() {
+        if (isAvailable()) {
+            return String.format("Table %d: [EMPTY]", tableId);
+        } else {
+            return String.format("Table %d: [Occupied by %s]", tableId, occupiedCustomer);
+        }
+    }
+}
+
+3. 代码关键要点解析
+空闲状态判定（isAvailable）：
+当 occupiedCustomer == null 时说明餐桌空闲。侍应生在执行安排入座（SEAT）指令前，会先调用此方法校验该餐桌是否能够坐人。
+餐桌的生命周期流转：
+侍应生安排入座：侍应生执行 SEAT 动作，调用 table.seatCustomer(customer) 将顾客绑定到餐桌上。
+结账或不满意离开：收银员完成结账（PAID）或者顾客满意度跌至 0 离店（LEFT_UNHAPPY）时，系统调用 table.releaseTable() 将 occupiedCustomer 重新设为 null，释放餐桌供下一位顾客使用。
+
+到这里，domain 包下的 5 个文件（MenuItem、Menu、Order、Customer、Table）就全部讲完了！
+下一步我们可以进入 staff（员工类包），看 Staff 抽象基类以及 Waiter、Chef、Cashier 的实现。你准备好继续了吗？
+Qpublic String toString() {
+if (isAvailable()) {
+return String.format("Table %d: [EMPTY]", tableId);
+} else {
+return String.format("Table %d: [Occupied by %s]", tableId, occupiedCustomer);
+}
+}这个每一行解释一下在干什么
+A这段代码重写了 Java 的 toString() 方法，用来决定当我们在控制台打印一张餐桌（Table）时，它呈现给玩家的文本样式。
+逐行拆解解释如下：
+
+public String toString() { 解释：定义重写的 toString() 方法。public 表示公开访问，String 表示该方法执行后会返回一串文字。
+if (isAvailable()) { 解释：进入 if 条件判断。调用类内部的 isAvailable() 方法，检查当前餐桌是否空闲（即桌上是否没有顾客，也就是 occupiedCustomer == null）。
+return String.format("Table %d: [EMPTY]", tableId); 解释：如果餐桌是空闲的，直接返回格式化的空桌提示。其中 %d 会被餐桌的编号 tableId 替换。
+控制台输出效果：Table 1: [EMPTY]
+} else { 解释：分支过渡。如果 isAvailable() 返回 false（说明桌上已经坐了顾客），则执行 else 分支里的逻辑。
+return String.format("Table %d: [Occupied by %s]", tableId, occupiedCustomer); 解释：如果餐桌有人，返回占用提示。
+%d 替换为餐桌编号 tableId。
+%s 替换为占用的顾客对象 occupiedCustomer。这里 Java 会自动调用 Customer 类的 toString() 方法，将该顾客的 ID、满意度、订单信息直接嵌入进来。
+控制台输出效果：Table 1: [Occupied by Customer #1 [Sat: 100, Status: SEATED, Order: No Order]]
+} 与 } 解释：分别结束 if-else 条件判断块和整个 toString() 方法。
+
+💡 domain 包里的实体类（Customer、MenuItem、Order、Menu、Table）我们就全部搞定了！下一步我们要看 staff（员工角色包） 中的抽象基类 Staff.java 以及具体的员工实现吗？
+Q menu.java也是domain吗 就是区分于menuitem那个
+
+A 是的，Menu.java 同样属于 domain（领域模型）包。
+它们在面向对象设计中的分工和职责（SRP）有所不同：
+
+两者的核心区别
+MenuItem.java（单个菜品类）：
+性质：基础数据实体（Entity / Value Object）。
+职责：代表菜单上的某一道具体菜品（例如 Salad $9.00 / 1 单位、Burger $15.00 / 1 单位、Pasta $18.00 / 2 单位）。
+包含属性：名称 name、价格 priceInCents 和制作单位 prepUnitsRequired。
+Menu.java（菜单管理/容器类）：
+性质：领域容器与业务规则封装类。
+职责：
+组合管理：持有一个菜品列表（List<MenuItem>），将所有的 MenuItem 组装在一起。
+逻辑封装：作业要求游戏规则和顾客点餐行为必须写在 domain 或 controller 中。因此，Menu.java 封装了“顾客自主选餐”的确定性分配规则（selectFoodForCustomer）。
+
+💡 搞清楚 domain 包的实体后，我们接下来要看 staff（员工包） 里的抽象基类 Staff.java 以及侍应生 Waiter、厨师 Chef 的代码了吗？
+Q 你看下Menu.java
+
+A 下面是 Menu.java 的完整程序代码以及逐行/逐块的详细讲解。
+
+一、 Menu.java 完整 Java 源代码
+请在 domain 包下创建文件 Menu.java：
+package domain;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+/**
+ * 菜单类 (Menu)
+ * 属于 domain 包，负责维护餐厅的基础菜品，并执行“顾客自主选餐”逻辑
+ */
+public class Menu {
+    // 1. 私有属性：持有菜品列表（表达组合关系 Composition）
+    private final List<MenuItem> items;
+
+    /**
+     * 构造函数：初始化 Stage 1 的 3 种基础菜品
+     */
+    public Menu() {
+        items = new ArrayList<>();
+        // 价格以美分（cents）存储以避免浮点数精度误差：$9.00 -> 900, $15.00 -> 1500, $18.00 -> 1800
+        items.add(new MenuItem("Salad", 900, 1));
+        items.add(new MenuItem("Burger", 1500, 1));
+        items.add(new MenuItem("Pasta", 1800, 2));
+    }
+
+    /**
+     * 获取菜品列表（防御性封装）
+     * @return 返回只读（Unmodifiable）的菜品列表
+     */
+    public List<MenuItem> getItems() {
+        return Collections.unmodifiableList(items);
+    }
+
+    /**
+     * 顾客自主选餐规则（确定性分配算法）：
+     * 根据顾客 ID 依次循环分配菜品：
+     * - Customer #1 -> Salad ($9.00, 1 单位制作时间)
+     * - Customer #2 -> Burger ($15.00, 1 单位制作时间)
+     * - Customer #3 -> Pasta ($18.00, 2 单位制作时间)
+     * - Customer #4 -> Salad ($9.00, 1 单位制作时间) ... 循环往复
+     *
+     * @param customerId 顾客的唯一编号
+     * @return 所选择的 MenuItem 菜品对象
+     */
+    public MenuItem selectFoodForCustomer(int customerId) {
+        int index = (customerId - 1) % items.size();
+        return items.get(index);
+    }
+}
+
+二、 代码逐块/逐行深度解析
+1. 成员变量与构造函数：
+private final List<MenuItem> items; 解析：使用 List<MenuItem> 存储所有的菜品对象。在面向对象设计中，这代表 Menu 与 MenuItem 之间存在组合（Composition）关系。
+items.add(new MenuItem("Salad", 900, 1)); 等三行： 解析：初始化作业规定的 3 种基础菜品：Salad（$9.00，1 单位制作时间）、Burger（$15.00，1 单位制作时间）、Pasta（$18.00，2 单位制作时间）。作业要求金额涉及小数时必须使用**整数美分（integer cents）**存储，因此 $9.00 传 900 美分，$18.00 传 1800 美分。
+2. getItems() 方法（防御性封装）：
+return Collections.unmodifiableList(items); 解析：不直接返回原始的 items 列表引用，而是用 Collections.unmodifiableList 包装成只读列表。这样外部代码（如控制层或 UI 层）只能读取菜单，无法通过 getItems().add(...) 或 clear() 恶意修改菜单内容，保证了数据封装安全性。
+3. selectFoodForCustomer(int customerId) 方法（自主选餐规则）：
+int index = (customerId - 1) % items.size(); 解析：作业明确规定顾客必须自己选餐，经理（玩家）绝不能干预，且游戏规则逻辑必须放在 domain 或 control 对象中，不能写在 UI 里。同时，规则要求使用可文档化的确定性逻辑（deterministic rule）。这里利用取模运算符 %：
+Customer 1: (1 - 1) % 3 = 0 \(\rightarrow\) 取出索引 0 的 Salad
+Customer 2: (2 - 1) % 3 = 1 \(\rightarrow\) 取出索引 1 的 Burger
+Customer 3: (3 - 1) % 3 = 2 \(\rightarrow\) 取出索引 2 的 Pasta
+Customer 4: (4 - 1) % 3 = 0 \(\rightarrow\) 再次回到 Salad
+这种确定性分配确保每次运行测试时，顾客的点餐序列都完全可复现（reproducible）。
+
+接下来需要看 staff（员工包） 里的抽象基类 Staff.java 和具体的员工类（如 Waiter、Chef），还是继续讨论 Stage 1 的其他细节？
+Q public MenuItem selectFoodForCustomer(int customerId) {
+int index = (customerId - 1) % items.size();
+return items.get(index);
+}在干什么 总结一下就是概括一下
+A 简单来说，这段代码的作用是：根据顾客的 ID 按照固定顺序轮流为顾客自动选菜。
+具体可以概括为两点：
+逻辑实现（循环轮流）： 利用取模公式 (customerId - 1) % items.size()，让顾客按菜单顺序轮流选菜：
+1号顾客 \(\rightarrow\) 第 1 道菜（Salad）
+2号顾客 \(\rightarrow\) 第 2 道菜（Burger）
+3号顾客 \(\rightarrow\) 第 3 道菜（Pasta）
+4号顾客 \(\rightarrow\) 重新循环回第 1 道菜（Salad）……以此类推。
+满足作业规范： 作业要求“顾客必须自己选菜，经理（玩家）不能干预”，且规则必须是固定可预测的（确定性规则）。这样能确保每次运行测试时，顾客点菜的顺序完全一致，方便复现实验结果。
+
+💡 domain 包里的 5 个类（MenuItem、Menu、Order、Customer、Table）我们就全部看完了。接下来要看 staff（员工包） 里的代码了吗？
+Q domain enums写完了写什么
+
+A 写完了 enums 和 domain 包，接下来按照自底向上的开发顺序，应该写 staff（员工角色体系） 包！
+staff 包一共包含 4 个文件，充分体现了面向对象设计中的继承（Inheritance）与职责分离（SRP）：
+Staff.java（抽象基类 public abstract class Staff）：
+所有员工的父类，定义员工的通用属性（如角色名称 roleName、本回合是否忙碌状态 busyThisTurn）以及重置回合状态的方法。
+Waiter.java（侍应生类 public class Waiter extends Staff）：
+继承 Staff，负责实现侍应生的 3 项核心动作：安排入座（SEAT）、取单（TAKE_ORDER）和送餐（SERVE）。
+Chef.java（厨师类 public class Chef extends Staff）：
+继承 Staff，负责实现厨师的烹饪动作（COOK），为指定订单推进 1 个制作单位。
+Cashier.java（收银员类 public class Cashier extends Staff）：
+继承 Staff，负责实现收银员的自动结账动作，收取账款并更新总收入。
+
+写完 staff 包之后，最后就只剩下 controller (GameController.java) 和 ui (RestaurantGameCLI.java) 两个高层核心类了。
+我们可以先从抽象基类 Staff.java 开始看起，需要我现在为你逐行详细讲解它的源码吗？
+Q 带我看 Staff.java 的具体程序
+
+A 在面向对象设计（OOP）中，Staff.java 是 staff 包下的抽象基类（Abstract Base Class）。它定义了侍应生（Waiter）、厨师（Chef）、收银员（Cashier）以及 Stage 3 的迎宾员（Host）所共享的通用属性和行为。
+根据作业规范，员工人手有限，侍应生、厨师和收银员在每个回合中各执行一项任务。通过设立 Staff 抽象类，我们可以统一管理员工的角色名称以及本回合的忙碌状态。
+
+一、 Staff 的 UML 类图结构
++-------------------------------------------------+
+|                    Staff                        |
++-------------------------------------------------+
+| - roleName : String                             |
+| - busyThisTurn : boolean                        |
++-------------------------------------------------+
+| + Staff(roleName: String)                       |
+| + getRoleName() : String                        |
+| + isBusyThisTurn() : boolean                    |
+| + setBusyThisTurn(busyThisTurn: boolean) : void |
+| + resetTurn() : void                            |
++-------------------------------------------------+
+符号说明：
+- 代表 private 私有属性（数据封装）。
++ 代表 public 公开方法。
+类名使用斜体或标识为 abstract 代表这是一个抽象类，不能直接 new Staff()。
+
+二、 Staff.java 完整 Java 源代码
+请在项目的 staff 包下创建文件 Staff.java：
+package staff;
+
+/**
+ * 员工抽象基类 (Staff)
+ * 属于 staff 包，作为 Waiter, Chef, Cashier 的父类，体现 OOP 继承与封装特性
+ */
+public abstract class Staff {
+    // 1. 私有成员变量 (Encapsulated Attributes)
+    private final String roleName;    // 员工角色名称 (如 "Waiter", "Chef", "Cashier")
+    private boolean busyThisTurn;     // 标记该员工在本回合是否已经执行过任务
+
+    /**
+     * 构造函数 (只能被子类的 super(...) 调用)
+     * @param roleName 员工角色名称
+     */
+    public Staff(String roleName) {
+        this.roleName = roleName;
+        this.busyThisTurn = false; // 初始状态为非忙碌
+    }
+
+    // 2. Getter 与 Setter 方法
+
+    public String getRoleName() {
+        return roleName;
+    }
+
+    public boolean isBusyThisTurn() {
+        return busyThisTurn;
+    }
+
+    public void setBusyThisTurn(boolean busyThisTurn) {
+        this.busyThisTurn = busyThisTurn;
+    }
+
+    /**
+     * 回合重置：在每个新回合开始（Step 1）时调用，清空员工本回合的忙碌标记
+     */
+    public void resetTurn() {
+        this.busyThisTurn = false;
+    }
+}
+
+三、 代码逐块/逐行深度解析与设计亮点
+1. 抽象类定义 (public abstract class Staff)
+解析：使用 abstract 关键字进行修饰。因为在现实世界中，“员工”是一个抽象的概念，真正干活的是具体的“侍应生”、“厨师”或“收银员”。将 Staff 设为抽象类可以防止外部误用 new Staff(...) 去实例化一个不具体的对象，符合面向对象设计原则。
+2. 状态追踪 (private boolean busyThisTurn;)
+解析：作业规则明确规定侍应生每回合最多执行 1 项任务，厨师每回合最多推进 1 个制作单位，收银员每回合最多处理 1 笔结账。
+通过在基类中引入 busyThisTurn 变量：
+当侍应生完成安排入座、取单或送餐后，调用 setBusyThisTurn(true)。
+控制器或 UI 可以通过 isBusyThisTurn() 快速校验该员工本回合是否还能继续工作。
+3. 回合重置 (resetTurn())
+解析：在 Step 1（step1_Arrivals）新回合开始时，控制器会遍历所有员工并调用 resetTurn()，统一将 busyThisTurn 恢复为 false，从而开启新一轮的派工。
+
+💡 接下来我们可以看继承自 Staff 的具体子类 Waiter.java（侍应生，包含安排入座、取单和送餐的逻辑），需要我现在为你展示 Waiter.java 的具体程序吗？
+Q waiter看一眼
+
+A Waiter.java（侍应生类）继承自父类 Staff，负责实现侍应生在回合游戏中的 3 项核心业务职责：
+安排入座（SEAT）：将队列中的顾客安排到空餐桌。
+取单（TAKE_ORDER）：为已入座但未点餐的顾客记录菜品订单。
+送餐（SERVE）：将处于 READY 状态的菜品送达餐桌。
+根据作业规定，侍应生每回合最多执行 1 项任务。
+
+一、 Waiter 的 UML 类图结构
++-----------------------------------------------------------------+
+|                             Waiter                              |
++-----------------------------------------------------------------+
+|                                                                 |
++-----------------------------------------------------------------+
+| + Waiter()                                                      |
+| + seatCustomer(customer: Customer, table: Table) : boolean      |
+| + takeOrder(customer: Customer, menu: Menu, nextOrderId: int)   |
+|   : Order                                                       |
+| + serveOrder(customer: Customer, currentTurn: int) : boolean    |
++-----------------------------------------------------------------+
+
+二、 Waiter.java 完整 Java 源代码
+请在 staff 包下创建文件 Waiter.java：
+package staff;
+
+import domain.*;
+import enums.*;
+
+/**
+ * 侍应生类 (Waiter)
+ * 继承自 Staff 父类，实现安排入座、取单与送餐等业务逻辑
+ */
+public class Waiter extends Staff {
+
+    /**
+     * 构造函数：初始化侍应生角色名称为 "Waiter"
+     */
+    public Waiter() {
+        super("Waiter");
+    }
+
+    /**
+     * 任务 1：安排入座 (SEAT)
+     * @param customer 队列中的顾客
+     * @param table 目标餐桌
+     * @return 若成功入座返回 true，否则返回 false
+     */
+    public boolean seatCustomer(Customer customer, Table table) {
+        // 校验：必须处于等待队列中，且目标餐桌必须空闲
+        if (customer.getStatus() != CustomerStatus.WAITING_IN_QUEUE || !table.isAvailable()) {
+            return false;
+        }
+
+        table.seatCustomer(customer);
+        customer.setStatus(CustomerStatus.SEATED);
+        setBusyThisTurn(true); // 标记侍应生本回合已忙碌
+        return true;
+    }
+
+    /**
+     * 任务 2：取单 (TAKE_ORDER)
+     * @param customer 已入座的顾客
+     * @param menu 菜单对象
+     * @param nextOrderId 待分配的新订单 ID
+     * @return 创建成功返回 Order 对象，失败返回 null
+     */
+    public Order takeOrder(Customer customer, Menu menu, int nextOrderId) {
+        // 校验：顾客必须已入座且当前尚未点餐
+        if (customer.getStatus() != CustomerStatus.SEATED || customer.getOrder() != null) {
+            return null;
+        }
+
+        // 按照菜单的自主选餐规则自动选择菜品
+        MenuItem selectedItem = menu.selectFoodForCustomer(customer.getId());
+        Order newOrder = new Order(nextOrderId, selectedItem);
+        customer.setOrder(newOrder); // 绑定订单给顾客
+
+        setBusyThisTurn(true); // 标记侍应生本回合已忙碌
+        return newOrder;
+    }
+
+    /**
+     * 任务 3：送餐 (SERVE)
+     * @param customer 目标顾客
+     * @param currentTurn 当前游戏回合数
+     * @return 送餐成功返回 true，失败返回 false
+     */
+    public boolean serveOrder(Customer customer, int currentTurn) {
+        // 校验：顾客必须已入座且持有订单
+        if (customer.getStatus() != CustomerStatus.SEATED || customer.getOrder() == null) {
+            return false;
+        }
+
+        Order order = customer.getOrder();
+        // 校验：订单必须处于 READY 状态 (做好的菜)
+        if (order.getStatus() != OrderStatus.READY) {
+            return false;
+        }
+
+        // 更新订单与顾客状态
+        order.setStatus(OrderStatus.SERVED);
+        customer.setStatus(CustomerStatus.SERVED);
+        customer.setTurnServed(currentTurn); // 记录送达时的回合数
+
+        setBusyThisTurn(true); // 标记侍应生本回合已忙碌
+        return true;
+    }
+}
+
+三、 核心代码逐块解析
+继承结构 (extends Staff)：
+通过 super("Waiter") 调用父类构造函数，继承了父类中管理员工名称与 busyThisTurn 忙碌标记的成员变量与方法。
+状态校验防御 (seatCustomer / takeOrder / serveOrder)：
+每个方法最开头都做了严格的前置条件检查（例如餐桌是否可用 table.isAvailable()、菜品是否为 OrderStatus.READY）。不合法的动作直接返回 false 或 null，确保无效操作不会损坏游戏内部状态。
+与领域对象的协作 (Domain Interaction)：
+在 takeOrder 中调用 menu.selectFoodForCustomer(...) 实现顾客自主选菜，并将生成的 Order 对象绑定给顾客。
+在 serveOrder 中调用 customer.setTurnServed(currentTurn) 记录送达时间戳，为后续判断顾客用餐时长提供依据。
+
+💡 看完侍应生之后，接下来看同属于 staff 包的 Chef.java（厨师类，负责推进烹饪单位）和 Cashier.java（收银员类，负责自动结账）吗？
+Q chef呢
+
+A 同样属于 staff 包，厨师类 Chef.java 继承自父类 Staff。它的职责非常单一明确（单一职责原则 SRP）：在每回合为经理指定的 1 个订单推进 1 个制作单位（Preparation Unit）。
+
+一、 Chef 的 UML 类图结构
++-------------------------------------------------+
+|                      Chef                       |
++-------------------------------------------------+
+|                                                 |
++-------------------------------------------------+
+| + Chef()                                        |
+| + cookOrder(order: Order) : boolean             |
++-------------------------------------------------+
+继承关系：Chef extends Staff。
+
+二、 Chef.java 完整 Java 源代码
+请在 staff 包下创建文件 Chef.java：
+package staff;
+
+import domain.Order;
+
+/**
+ * 厨师类 (Chef)
+ * 继承自 Staff 父类，负责执行烹饪任务，推进订单制作进度
+ */
+public class Chef extends Staff {
+
+    /**
+     * 构造函数：初始化厨师角色名称为 "Chef"
+     */
+    public Chef() {
+        super("Chef");
+    }
+
+    /**
+     * 执行烹饪动作 (COOK)
+     * 厨师每回合最多选择 1 个订单推进 1 个制作单位
+     *
+     * @param order 经理指定需要烹饪的订单对象
+     * @return 若成功推进制作单位返回 true，否则返回 false
+     */
+    public boolean cookOrder(Order order) {
+        // 校验：订单不能为空，且不能是已经全部制作完成的订单
+        if (order == null || order.isFullyPrepared()) {
+            return false;
+        }
+
+        // 调用 Order 内部的 advancePreparation() 方法推进 1 个制作单位
+        order.advancePreparation();
+
+        // 标记厨师本回合已经忙碌 (每回合只能烹饪 1 次)
+        setBusyThisTurn(true);
+        return true;
+    }
+}
+
+三、 核心逻辑与游戏规则要点
+与侍应生的协同：
+规则允许厨师对侍应生在本回合刚录入的新订单直接进行烹饪。因此在 cookOrder 方法中，只要传入有效的 Order 对象（处于 PENDING 或 IN_PREPARATION 状态），厨师就能立刻对其推进 1 个单位。
+状态自动转换：
+cookOrder 方法内部会调用 order.advancePreparation()。当推进到该菜品的最后一个制作单位时（如 Pasta 完成第 2 个单位，或 Salad/Burger 完成第 1 个单位），订单状态会在 Order 对象内部自动切换为 READY。
+本回合做完菜的送达限制：
+当厨师在本回合把菜做成 READY 状态时，侍应生无法在同一回合将其送出（因为侍应生在步骤 2 已经行动完毕，且规则规定本回合刚做好的菜最快下回合才能送达）。
+
+看完了 Chef.java，接下来看 staff 包里的最后一个角色 Cashier.java（收银员类，负责自动结账）吗？
+Q 带我看 Cashier.java 的代码
+
+A 收银员类 Cashier.java 继承自父类 Staff。
+根据作业规范，收银员的工作是完全自动化的（经理/玩家无需手动派工）：每回合在 Step 4（Eating and payment）阶段，收银员会自动为处于 READY_TO_PAY 状态的最早（最老）一位顾客进行结账，收取账款存入总收入，将顾客和订单标记为 PAID，并释放餐桌。
+
+一、 Cashier 的 UML 类图结构
++-------------------------------------------------+
+|                     Cashier                     |
++-------------------------------------------------+
+|                                                 |
++-------------------------------------------------+
+| + Cashier()                                     |
+| + processPayment(customer: Customer,            |
+|                  table: Table) : int            |
++-------------------------------------------------+
+继承关系：Cashier extends Staff。
+
+二、 Cashier.java 完整 Java 源代码
+请在项目的 staff 包下创建文件 Cashier.java：
+package staff;
+
+import domain.*;
+import enums.*;
+
+/**
+ * 收银员类 (Cashier)
+ * 继承自 Staff 父类，负责在 Step 4 自动处理顾客结账与餐桌释放
+ */
+public class Cashier extends Staff {
+
+    /**
+     * 构造函数：初始化收银员角色名称为 "Cashier"
+     */
+    public Cashier() {
+        super("Cashier");
+    }
+
+    /**
+     * 执行结账动作 (processPayment)
+     * 收银员每回合最多自动为 1 位处于 READY_TO_PAY 状态的顾客处理结账
+     *
+     * @param customer 待结账的顾客对象
+     * @param table 该顾客占用的餐桌对象
+     * @return 成功结账返回收取的账款金额（美分）；无法结账则返回 0
+     */
+    public int processPayment(Customer customer, Table table) {
+        // 校验：顾客必须存在且处于 READY_TO_PAY 状态
+        if (customer == null || customer.getStatus() != CustomerStatus.READY_TO_PAY) {
+            return 0;
+        }
+
+        // 1. 获取顾客绑定的菜品价格（美分）
+        Order order = customer.getOrder();
+        int amountPaidInCents = order.getMenuItem().getPriceInCents();
+
+        // 2. 更新订单与顾客状态为 PAID
+        order.setStatus(OrderStatus.PAID);
+        customer.setStatus(CustomerStatus.PAID);
+
+        // 3. 释放被占用的餐桌
+        if (table != null) {
+            table.releaseTable();
+        }
+
+        // 4. 标记收银员本回合已忙碌
+        setBusyThisTurn(true);
+
+        // 返回本次收取的账款金额（用于累加进总收入）
+        return amountPaidInCents;
+    }
+}
+
+三、 核心代码逐块解析与规则对照
+自动结账触发机制 (processPayment)：
+按照规则，在上一回合或更早拿到菜品（SERVED）的顾客，会在本回合用餐完毕并自动切换为 READY_TO_PAY 状态。
+控制器会在 Step 4 自动找出最早就绪的 1 位顾客，并传给 cashier.processPayment(...) 处理。
+金额计算与防浮点数误差：
+账款金额通过 order.getMenuItem().getPriceInCents() 获取（美分单位，如 Salad 存储为 900 美分，即 $9.00）。这严格遵从了作业中“小数金额必须以美分存储”的规范。
+资源释放（清空餐桌）：
+调用 table.releaseTable() 将餐桌重新设为空闲状态（occupiedCustomer = null），使等待队列中的下一位顾客可以在随后的回合里入座。
+
+到这里，staff 包下的所有 4 个文件（Staff 抽象基类、Waiter、Chef、Cashier）就全部讲解完毕了！
+接下来需要看 controller (GameController.java) 的详细流程，还是 ui (RestaurantGameCLI.java) 的命令行交互程序呢？
+Q int amountPaidInCents = order.getMenuItem().getPriceInCents();这一行好像报错了 为什么
+
+A 这句话报错通常有两种情况：一种是编译报错（编译器下划红线/无法通过编译），另一种是运行报错（程序跑起来时崩溃）。
+你可以对照以下最常见的 4 个原因来排查：
+
+原因 1：方法缺乏 public 跨包修饰符（最常见）
+Cashier.java 位于 staff 包，而 Order.java 和 MenuItem.java 位于 domain 包。
+检查 MenuItem.java： getPriceInCents() 方法前面必须有 public： public int getPriceInCents() { // 必须有 public
+    return priceInCents;
+}
+
+检查 Order.java： getMenuItem() 方法前面也必须有 public： public MenuItem getMenuItem() { // 必须有 public
+    return menuItem;
+}
+
+如果漏写了 public（写成了默认的 int getPriceInCents()），跨包调用时编译器就会报 getPriceInCents() is not public in domain.MenuItem; cannot be accessed from outside package。
+
+原因 2：缺少 import 导包
+Cashier.java 头部如果没有正确导入 domain 包里的类，编译器会找不到 MenuItem。
+请确保 Cashier.java 的最顶部写上了：
+package staff;
+
+import domain.Customer;
+import domain.Order;
+import domain.MenuItem; // 或者直接 import domain.*;
+
+原因 3：方法名拼写不一致（大小写或名称不匹配）
+检查另外几个类里的 Getter 方法名与调用的名称是否完全一致（Java 对大小写极度敏感）：
+Customer.java 中是否有 public Order getOrder()
+Order.java 中是否有 public MenuItem getMenuItem()
+MenuItem.java 中是否有 public int getPriceInCents()（注意 In 的 I 是大写）
+
+原因 4：运行时的空指针异常（NullPointerException）
+如果是程序运行时报 NullPointerException，说明 order 变量为 null。
+在调用 order.getMenuItem() 之前，需要先判断 order 是否为空：
+Order order = customer.getOrder();
+if (order != null && order.getMenuItem() != null) {
+    int amountPaidInCents = order.getMenuItem().getPriceInCents();
+    // ...
+}
+
+你可以看一下你的 IDE（如 Eclipse / IntelliJ / VS Code）提示的具体错误信息是什么？如果还有红线，把具体的报错文本发给我，我帮你精准解决！
+Q 你前面用的是小写的priceInCents吗 还是什么
+
+A 是的！我们在不同地方的拼写规则如下（遵循标准的 Java 驼峰命名法 CamelCase）：
+1. 在 MenuItem.java 内部：
+属性变量名（小写 p 开头）： private final int priceInCents; // p 小写，I 和 C 大写
+
+Getter 方法名（大写 P）： public int getPriceInCents() { // get 后面接大写的 PriceInCents
+    return priceInCents;
+}
+
+
+2. 在 Cashier.java 中调用时：
+因为 priceInCents 是 MenuItem 的私有属性（private），在跨包的 Cashier.java 里不能直接用变量名，必须通过 getPriceInCents() 方法来获取。
+正确调用的写法是：
+int amountPaidInCents = order.getMenuItem().getPriceInCents();
+
+🔍 检查报错的快速排查清单：
+看 MenuItem.java 中的方法名：
+确保方法名是 public int getPriceInCents()（注意 P 是大写）。
+如果写成了小写的 getpriceInCents()，就会找不到方法。
+看 Cashier.java 调用时有没有带括号：
+必须带上 ()：getPriceInCents()
+如果写成 order.getMenuItem().priceInCents（没带括号），就会报 priceInCents has private access in MenuItem 错。
+把 MenuItem.java 里的 Getter 方法名和 Cashier.java 里的调用对齐成 getPriceInCents() 就能解决报错啦！
+Q 千米那用的是小写的好像 所以这边有什么要改吗
+
+A 如果在前面的 MenuItem.java 里，你把 Getter 方法写成了小写的 getpriceInCents()（p 是小写的），或者属性变量是 priceInCents，只需要把 MenuItem.java 里的方法名改成标准驼峰命名即可。
+
+修改方案（保持统一）
+请确保两边按照以下标准规范对齐：
+1. 修改 MenuItem.java （推荐修改这里）
+按照 Java 的命名规范，Getter 方法在 get 后面接首字母大写的属性名。请把 MenuItem.java 里的 Getter 方法改成大写 P：
+// MenuItem.java 内部
+public int getPriceInCents() {    // 注意 get 后的 P 要大写！
+    return priceInCents;
+}
+2. 检查 Cashier.java
+修改完 MenuItem.java 后，在 Cashier.java 里这样调用就完全不需要再改了：
+// Cashier.java 内部
+int amountPaidInCents = order.getMenuItem().getPriceInCents();
+
+把 MenuItem.java 里的方法名更正为 getPriceInCents() 后，保存文件，Cashier.java 里的报错就会自动消失！
+💡 重新编译一下试试看，报错解决了吗？
+Q 说一下controller包要干啥都
+
+A 在 MVC（模型-视图-控制器）架构中，controller 包充当整个餐厅管理游戏的**“大脑”与“中枢引擎”**。
+作业要求明确指出：“UI 层只能用于收集玩家决策和显示当前状态，所有的游戏规则和业务逻辑都必须放在 domain 和 control 对象中”。因此，controller 包（核心类为 GameController.java）的主要任务是将 ui 层与 domain / staff 实体隔离开来。
+
+核心四大职责
+1. 维护游戏全局状态（State Management）
+GameController 负责创建并持有整个餐厅的运行数据，包括：
+时间与财务：当前回合数（1～18 回合）、总营业额（以美分存储，如 4500 美分代表 $45.00）。
+地图与设备：2 张餐桌（tables）。
+人员与容器：顾客等待队列（waitingQueue）、已付费离店顾客列表（paidCustomers）、活动订单列表（activeOrders）以及 3 名员工（Waiter、Chef、Cashier）。
+
+2. 驱动每回合的 6 个标准执行步骤（Turn Lifecycle Driver）
+作业规定每个回合必须严格按顺序触发以下 6 个步骤，这些逻辑全部由 controller 协调封装：
+Step 1 Arrivals（顾客到达）：在固定回合（第 1, 4, 7, 10, 13, 16 回合）生成新顾客并加入等待队列，同时重置员工本回合的忙碌标记。
+Step 2 Manager Choices（玩家决策校验与执行）：接收 UI 传来的玩家操作指令，校验其合法性（如：餐桌是否空闲、侍应生/厨师本回合是否已经忙碌），并派发给对应员工对象。
+Step 3 Kitchen and Serving（厨房与送餐协同）：协调侍应生与厨师的行动次序（侍应生先行动，厨师后行动），处理菜品制作单位推进与状态转换。
+Step 4 Eating and Payment（用餐与自动结账）：判断顾客用餐时长（需吃满 1 个完整回合），触发收银员自动为最早就绪的顾客结账、累加营业额并释放餐桌。
+Step 5 Waiting and Abandonment（满意度扣减与未送餐离店）：回合结束时，为队列中及在座未送餐的顾客扣除 8 点满意度；若满意度降至 0，自动清算离店并清空餐桌与未完成订单。
+Step 6 Result（胜负结算）：满 18 回合后自动判断是否同时达成胜利的三项指标。
+
+3. 校验玩家指令合法性（Validation Gatekeeper）
+UI 层不能包含业务校验，所以 controller 必须提供各种校验方法：
+例如：validateWaiterSeat(...)（检查目标餐桌是否为空）、validateWaiterServe(...)（检查菜品是否在前一回合就已经处于 READY 状态，因为本回合做好的菜最早只能下回合送达）。
+如果玩家做出了非法指令，controller 拦截并告知 UI 原因，让玩家重新选择且不浪费员工的操作次数。
+
+4. 统计与胜负条件判定（Game Outcome Calculation）
+负责计算已付费顾客的平均满意度，并在第 18 回合结束时进行最终胜负判定：
+胜利条件（必须同时满足）：
+付费顾客人数 \(\ge 4\) 人；
+总营业额 \(\ge $45.00\)（4500 美分）；
+已付费顾客的平均满意度 \(\ge 60.0\)。
+
+💡 domain、enums 和 staff 包都搞定后，我们要接着看 GameController.java 的具体代码实现，还是直接看 ui 包（RestaurantGameCLI.java） 的命令行交互程序？
+Q 查看 GameController.java 的具体程序
+
+A 在作业规范中，GameController.java 是控制整个 18 回合游戏生命周期的核心引擎，负责维护地图状态（2 张餐桌、1 名侍应生、1 名厨师、1 名收银员）、管理顾客队列，并严格按照顺序驱动每回合的 6 个执行步骤。
+
+一、 GameController UML 类图结构
++-----------------------------------------------------------------------+
+|                            GameController                             |
++-----------------------------------------------------------------------+
+| - currentTurn : int = 1                                               |
+| - totalRevenueInCents : int = 0                                       |
+| - nextCustomerId : int = 1                                            |
+| - nextOrderId : int = 1                                               |
+| - waitingQueue : List<Customer>                                       |
+| - tables : List<Table>                                                |
+| - paidCustomers : List<Customer>                                      |
+| - allCustomersCreated : List<Customer>                                |
+| - activeOrders : List<Order>                                          |
+| - menu : Menu                                                         |
+| - waiter : Waiter                                                     |
+| - chef : Chef                                                         |
+| - cashier : Cashier                                                   |
++-----------------------------------------------------------------------+
+| + GameController()                                                    |
+| + getCurrentTurn() : int                                              |
+| + getTotalRevenueInCents() : int                                      |
+| + getFormattedRevenue() : String                                      |
+| + getAverageSatisfaction() : double                                   |
+| + getFormattedAverageSatisfaction() : String                          |
+| + step1_Arrivals() : void                                             |
+| + validateWaiterSeat(customerId: int, tableId: int) : boolean         |
+| + validateWaiterTakeOrder(customerId: int) : boolean                  |
+| + validateWaiterServe(orderId: int) : boolean                         |
+| + validateChefCook(orderId: int) : boolean                            |
+| + executeTurnActions(...) : void                                      |
+| + step4_EatingAndPayment() : void                                     |
+| + step5_WaitingAndAbandonment() : void                                |
+| + advanceTurn() : void                                                |
+| + isGameOver() : boolean                                              |
+| + isVictory() : boolean                                               |
++-----------------------------------------------------------------------+
+
+二、 GameController.java 完整 Java 源代码
+请在 controller 包下创建文件 GameController.java：
+package controller;
+
+import domain.*;
+import enums.*;
+import staff.*;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+/**
+ * 游戏核心控制器 (GameController)
+ * 负责维护 18 个回合的流转及每回合 6 个步骤的规则校验与状态更新
+ */
+public class GameController {
+    // 基础设定常量 (根据作业基准参数设定)
+    public static final int MAX_TURNS = 18;                     // 最大 18 个回合
+    public static final int TABLE_COUNT = 2;                    // 2 张餐桌
+    public static final int TARGET_PAID_CUSTOMERS = 4;          // 目标付费顾客 >= 4 人
+    public static final int TARGET_REVENUE_CENTS = 4500;        // 目标营业额 >= $45.00 (4500 美分)
+    public static final double TARGET_AVG_SATISFACTION = 60.0;  // 目标平均满意度 >= 60.0
+
+    // 回合运行指标与计数器
+    private int currentTurn;
+    private int totalRevenueInCents; // 金额以整数美分存储，避免浮点精度误差
+    private int nextCustomerId;
+    private int nextOrderId;
+
+    // 容器与角色对象
+    private final List<Customer> waitingQueue;
+    private final List<Table> tables;
+    private final List<Customer> paidCustomers;
+    private final List<Customer> allCustomersCreated;
+    private final List<Order> activeOrders;
+
+    private final Menu menu;
+    private final Waiter waiter;
+    private final Chef chef;
+    private final Cashier cashier;
+
+    /**
+     * 构造函数：初始化地图结构、人员角色与数据容器
+     */
+    public GameController() {
+        this.currentTurn = 1;
+        this.totalRevenueInCents = 0;
+        this.nextCustomerId = 1;
+        this.nextOrderId = 1;
+
+        this.waitingQueue = new ArrayList<>();
+        this.tables = new ArrayList<>();
+        for (int i = 1; i <= TABLE_COUNT; i++) {
+            tables.add(new Table(i));
+        }
+
+        this.paidCustomers = new ArrayList<>();
+        this.allCustomersCreated = new ArrayList<>();
+        this.activeOrders = new ArrayList<>();
+
+        this.menu = new Menu();
+        this.waiter = new Waiter();
+        this.chef = new Chef();
+        this.cashier = new Cashier();
+    }
+
+    // =========================================================================
+    // 基础信息获取与指标统计
+    // =========================================================================
+
+    public int getCurrentTurn() { return currentTurn; }
+    public int getTotalRevenueInCents() { return totalRevenueInCents; }
+
+    /**
+     * 获取格式化的显示金额 (如 "$45.00")
+     */
+    public String getFormattedRevenue() {
+        return String.format("$%.2f", totalRevenueInCents / 100.0);
+    }
+
+    /**
+     * 计算已付费离店顾客的平均满意度
+     */
+    public double getAverageSatisfaction() {
+        if (paidCustomers.isEmpty()) return -1.0;
+        int sum = 0;
+        for (Customer c : paidCustomers) {
+            sum += c.getSatisfaction();
+        }
+        return (double) sum / paidCustomers.size();
+    }
+
+    public String getFormattedAverageSatisfaction() {
+        double avg = getAverageSatisfaction();
+        return (avg < 0) ? "N/A" : String.format("%.1f", avg);
+    }
+
+    public List<Customer> getWaitingQueue() { return waitingQueue; }
+    public List<Table> getTables() { return tables; }
+    public List<Customer> getPaidCustomers() { return paidCustomers; }
+    public List<Order> getActiveOrders() { return activeOrders; }
+
+    // =========================================================================
+    // 每回合 6 个步骤的核心业务逻辑
+    // =========================================================================
+
+    /**
+     * 步骤 1: Arrivals (顾客到达)
+     * 在第 1, 4, 7, 10, 13, 16 回合各产生 1 位普通顾客 (初始满意度 100)
+     */
+    public void step1_Arrivals() {
+        // 重置所有员工本回合的忙碌标记
+        waiter.resetTurn();
+        chef.resetTurn();
+        cashier.resetTurn();
+
+        // 判定固定的顾客到达回合
+        if (currentTurn == 1 || currentTurn == 4 || currentTurn == 7 ||
+            currentTurn == 10 || currentTurn == 13 || currentTurn == 16) {
+            Customer c = new Customer(nextCustomerId++);
+            waitingQueue.add(c);
+            allCustomersCreated.add(c);
+        }
+    }
+
+    // 步骤 2 动作合法性校验方法
+    public boolean validateWaiterSeat(int customerId, int tableId) {
+        Customer target = getCustomerInQueueById(customerId);
+        Table t = getTableById(tableId);
+        return target != null && t != null && t.isAvailable();
+    }
+
+    public boolean validateWaiterTakeOrder(int customerId) {
+        Customer c = getSeatedCustomerById(customerId);
+        return c != null && c.getOrder() == null;
+    }
+
+    public boolean validateWaiterServe(int orderId) {
+        Order o = getOrderById(orderId);
+        if (o == null || o.getStatus() != OrderStatus.READY) return false;
+        Customer c = getCustomerByOrder(o);
+        // 本回合刚制作完成的菜品，最早只能在下一个回合被侍应生送达
+        return c != null && c.getStatus() == CustomerStatus.SEATED;
+    }
+
+    public boolean validateChefCook(int orderId) {
+        Order o = getOrderById(orderId);
+        return o != null && (o.getStatus() == OrderStatus.PENDING || o.getStatus() == OrderStatus.IN_PREPARATION);
+    }
+
+    /**
+     * 步骤 2: Manager Choices (执行玩家决定的侍应生与厨师任务)
+     */
+    public void executeTurnActions(WaiterAction wAction, Integer wTargetId, Integer wTableId, ChefAction cAction, Integer cOrderId) {
+        // 1. 侍应生先行动
+        if (wAction == WaiterAction.SEAT) {
+            Customer c = getCustomerInQueueById(wTargetId);
+            Table t = getTableById(wTableId);
+            waiter.seatCustomer(c, t);
+            waitingQueue.remove(c);
+        } else if (wAction == WaiterAction.TAKE_ORDER) {
+            Customer c = getSeatedCustomerById(wTargetId);
+            Order o = waiter.takeOrder(c, menu, nextOrderId++);
+            if (o != null) activeOrders.add(o);
+        } else if (wAction == WaiterAction.SERVE) {
+            Order o = getOrderById(wTargetId);
+            Customer c = getCustomerByOrder(o);
+            waiter.serveOrder(c, currentTurn);
+        }
+
+        // 2. 厨师后行动 (厨师可以烹饪侍应生在本回合刚刚录入的新订单)
+        if (cAction == ChefAction.COOK) {
+            Order o = getOrderById(cOrderId);
+            chef.cookOrder(o);
+        }
+    }
+
+    /**
+     * 步骤 4: Eating and payment (用餐与自动结账)
+     */
+    public void step4_EatingAndPayment() {
+        // 在上一回合或更早拿到菜品的顾客，本回合吃完饭并转化为 READY_TO_PAY 状态
+        for (Customer c : allCustomersCreated) {
+            if (c.getStatus() == CustomerStatus.SERVED && c.getTurnServed() < currentTurn) {
+                c.setStatus(CustomerStatus.READY_TO_PAY);
+            }
+        }
+
+        // 收银员每回合自动处理最早就绪的 1 位顾客结账
+        Customer toPay = null;
+        for (Customer c : allCustomersCreated) {
+            if (c.getStatus() == CustomerStatus.READY_TO_PAY) {
+                toPay = c;
+                break;
+            }
+        }
+
+        if (toPay != null) {
+            Table t = getTableByCustomer(toPay);
+            int paid = cashier.processPayment(toPay, t);
+            totalRevenueInCents += paid;
+            paidCustomers.add(toPay);
+            if (toPay.getOrder() != null) activeOrders.remove(toPay.getOrder());
+        }
+    }
+
+    /**
+     * 步骤 5: Waiting and abandonment (扣减满意度与未送餐离店清算)
+     */
+    public void step5_WaitingAndAbandonment() {
+        // 回合结束时，队列中或在座未送餐的顾客扣除 8 点满意度
+        for (Customer c : allCustomersCreated) {
+            if (c.getStatus() == CustomerStatus.WAITING_IN_QUEUE || c.getStatus() == CustomerStatus.SEATED) {
+                c.decreaseSatisfaction(8);
+            }
+        }
+
+        // 队列中满意度降为 0 的顾客离店
+        Iterator<Customer> qIter = waitingQueue.iterator();
+        while (qIter.hasNext()) {
+            Customer c = qIter.next();
+            if (c.isUnhappyAndLeaves()) {
+                c.setStatus(CustomerStatus.LEFT_UNHAPPY);
+                qIter.remove();
+            }
+        }
+
+        // 餐桌上满意度降为 0 的顾客离店，取消未完成订单并清空释放餐桌
+        for (Table t : tables) {
+            if (!t.isAvailable()) {
+                Customer c = t.getOccupiedCustomer();
+                if (c.isUnhappyAndLeaves()) {
+                    c.setStatus(CustomerStatus.LEFT_UNHAPPY);
+                    if (c.getOrder() != null) {
+                        c.getOrder().setStatus(OrderStatus.PAID);
+                        activeOrders.remove(c.getOrder());
+                    }
+                    t.releaseTable();
+                }
+            }
+        }
+    }
+
+    // =========================================================================
+    // 回合推进与胜负判定
+    // =========================================================================
+
+    public void advanceTurn() { currentTurn++; }
+    public boolean isGameOver() { return currentTurn > MAX_TURNS; }
+
+    /**
+     * 检查是否达成胜利条件：
+     * 必须同时满足：付费顾客 >= 4 人 AND 营业额 >= $45.00 AND 平均满意度 >= 60.0
+     */
+    public boolean isVictory() {
+        return paidCustomers.size() >= TARGET_PAID_CUSTOMERS &&
+               totalRevenueInCents >= TARGET_REVENUE_CENTS &&
+               getAverageSatisfaction() >= TARGET_AVG_SATISFACTION;
+    }
+
+    // =========================================================================
+    // 内部查找辅助方法
+    // =========================================================================
+
+    public Table getTableById(int id) {
+        for (Table t : tables) if (t.getTableId() == id) return t;
+        return null;
+    }
+
+    public Customer getCustomerInQueueById(int id) {
+        for (Customer c : waitingQueue) if (c.getId() == id) return c;
+        return null;
+    }
+
+    public Customer getSeatedCustomerById(int id) {
+        for (Table t : tables) {
+            if (!t.isAvailable() && t.getOccupiedCustomer().getId() == id) return t.getOccupiedCustomer();
+        }
+        return null;
+    }
+
+    public Order getOrderById(int id) {
+        for (Order o : activeOrders) if (o.getOrderId() == id) return o;
+        return null;
+    }
+
+    public Customer getCustomerByOrder(Order order) {
+        for (Customer c : allCustomersCreated) if (c.getOrder() == order) return c;
+        return null;
+    }
+
+    public Table getTableByCustomer(Customer c) {
+        for (Table t : tables) if (!t.isAvailable() && t.getOccupiedCustomer() == c) return t;
+        return null;
+    }
+}
+
+三、 重点规则与代码映射解析
+顾客固定到达计划 (step1_Arrivals)：
+按照规则，顾客只会在第 1, 4, 7, 10, 13, 16 回合加入队列，总计 6 位顾客。第 16 回合到达的顾客由于时间不足无法在 18 回合内结账，因此实际最多能结账 5 位顾客。
+美分存储与财务计算 (totalRevenueInCents)：
+所有价格在代码中均以整数美分计算（例如 $45.00 存储为 4500），避免浮点运算精度损失。
+满意度扣减与未送餐离店 (step5_WaitingAndAbandonment)：
+普通顾客在未送餐前，每回合扣除 8 点满意度。一旦降至 0（isUnhappyAndLeaves()），顾客放弃等待并离店，对应餐桌被自动清空，未完成的订单从活动列表中剔除。
+胜利目标校验 (isVictory)：
+在第 18 回合结束时检查：付费顾客人数 \(\ge 4\)、总营业额 \(\ge $45.00\) 且平均满意度 \(\ge 60.0\) 三者必须同时满足才能获得胜利。
+
+🖥️ 现在控制器已经写好，接下来我们来看看最后一个文件 RestaurantGameCLI.java（命令行交互入口），看看如何向玩家呈现菜单和每回合的文字面板？
+Q getAverageSatisfaction() {是前面在哪写的
+
+A getAverageSatisfaction() 是写在 GameController.java（控制器类）里面的。
+在 GameController.java 中，它的完整代码如下：
+/**
+ * 计算已付费离店顾客的平均满意度
+ */
+public double getAverageSatisfaction() {
+    if (paidCustomers.isEmpty()) return -1.0; // 如果还没有顾客结账离开，返回 -1.0 表示 N/A
+    int sum = 0;
+    for (Customer c : paidCustomers) {
+        sum += c.getSatisfaction(); // 累加所有已付费离店顾客的最终满意度
+    }
+    return (double) sum / paidCustomers.size(); // 计算并返回平均值
+}
+
+它的作用：
+实时统计：在每回合输出面板时，调用它来显示当前已付款顾客的平均满意度（例如 60.0）。
+胜利判定：在第 18 回合结束检查胜利条件时，isVictory() 方法会调用它来核对平均满意度是否达标（\(\ge 60.0\)）。
+
+💡 接下来我们看最后的 RestaurantGameCLI.java（命令行交互界面类），看看怎么把整套游戏跑起来？
+Q getAverageSatisfaction报错了 是不是前面没写到这个还是名字问题
+
+A getAverageSatisfaction() 报错通常有以下 3 个最常见的原因，你可以对照排查：
+
+原因 1：Customer.java 里缺乏 getSatisfaction() 方法（最常见）
+在 GameController.java 计算平均满意度时，会遍历已付费顾客并调用 c.getSatisfaction()。如果之前在 Customer.java 里漏写了这个 Getter，或者方法名拼写不一致（例如写成了 getSatisfactionScore()），IDE 就会下划红线报错。
+解决办法：请检查并确保 Customer.java 中包含了以下 public 方法：
+// Customer.java 内部
+public int getSatisfaction() {
+    return satisfaction;
+}
+
+原因 2：Customer.java 里的 getSatisfaction() 漏掉了 public
+Customer 类位于 domain 包，而 GameController 位于 controller 包。如果 Customer.java 中的方法写成了 int getSatisfaction()（漏掉了 public），跨包调用时就会报访问权限错误：getSatisfaction() is not public in Customer; cannot be accessed from outside package。
+解决办法：在 Customer.java 的 getSatisfaction() 前面加上 public。
+
+原因 3：GameController.java 中的完整方法对照
+请核对在 GameController.java 中该方法的完整代码：
+/**
+ * 计算已付费离店顾客的平均满意度
+ */
+public double getAverageSatisfaction() {
+    if (paidCustomers.isEmpty()) return -1.0; // 若尚无付费顾客离店，返回 -1.0 代表 N/A
+    int sum = 0;
+    for (Customer c : paidCustomers) {
+        sum += c.getSatisfaction();
+    }
+    return (double) sum / paidCustomers.size();
+}
+
+💡 检查一下 Customer.java 里的方法名和 public 修饰符，补上后再编译看看报错解决了吗？
+
+
 
