@@ -142,4 +142,4 @@ Pending recording.
 ## YE Diwen: ai declaration and ai history
 AI declaration: https://github.com/jaedonkhoo/SC2002_SCEB_Grp2/blob/dbbc44d5153d52a5bd94281cbf44b5f0b9577698/YE%20Diwen%20Declaration%20on%20Use%20of%20GAI%20Assistance.pdf
 
-AI chat history: https://github.com/jaedonkhoo/SC2002_SCEB_Grp2/blob/dbbc44d5153d52a5bd94281cbf44b5f0b9577698/YeDiwen-aichat-history
+AI chat history: https://github.com/jaedonkhoo/SC2002_SCEB_Grp2/blob/e01d3e4b13b7dfc4ecd7d23f7eff626ac7c6b1b5/YeDiwen-aichat-history
