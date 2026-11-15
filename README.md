@@ -61,8 +61,7 @@ Jump to the test notes for [Stage 1](TESTING.md#stage-1), [Stage 2](TESTING.md#s
 
 **Stage versions:** [Stage 1](https://github.com/jaedonkhoo/SC2002_SCEB_Grp2/tree/stage-1) · [Stage 2](https://github.com/jaedonkhoo/SC2002_SCEB_Grp2/tree/stage-2) · [Stage 3](https://github.com/jaedonkhoo/SC2002_SCEB_Grp2/tree/stage-3)
 
-File links below point to the destination stage's tagged version. Stage 3 links
-will become available once the `stage-3` tag is published.
+File links below point to the destination stage's published tagged version.
 
 ### Stage 1 → Stage 2
 
@@ -124,22 +123,15 @@ will become available once the `stage-3` tag is published.
 
 ## AI Assistance History
 
-Complete chronological AI conversation histories are maintained on individual group-member branches.
+Available AI conversation records are linked below on each contributor's branch.
 
-**Links:** Pending.
+| Contributor | Branch | Conversation files |
+|---|---|---|
+| Wang Ziyunzhe | [ai-history-kiyaya0829](https://github.com/jaedonkhoo/SC2002_SCEB_Grp2/tree/ai-history-kiyaya0829) | [chat-01.md](https://github.com/jaedonkhoo/SC2002_SCEB_Grp2/blob/ai-history-kiyaya0829/chat-01.md), [chat-02.md](https://github.com/jaedonkhoo/SC2002_SCEB_Grp2/blob/ai-history-kiyaya0829/chat-02.md) |
+| Ye Diwen | [YEDiwen](https://github.com/jaedonkhoo/SC2002_SCEB_Grp2/tree/YEDiwen) | [YeDiwen-aichat-history](https://github.com/jaedonkhoo/SC2002_SCEB_Grp2/blob/YEDiwen/YeDiwen-aichat-history) |
+
+The remaining contributors declared no AI use.
 
 ## Video Timestamps
 
 Pending recording.
-
-## kiyaya0829: diagrams and AI evidence
-
-- [Stage 1 class diagram PDF](uml%20dragrams/stage-1-class-diagram-single-page.pdf)
-- [Stage 3 sequence diagram PDF](uml%20dragrams/stage-3-sequence-diagram.drawio.pdf)
-- [Personal AI history](https://github.com/jaedonkhoo/SC2002_SCEB_Grp2/tree/ai-history-kiyaya0829/ai-history)
-- [Complete diagram-review chat](https://github.com/jaedonkhoo/SC2002_SCEB_Grp2/blob/ai-history-kiyaya0829/ai-history/complete/chat-01.md)
-
-## YE Diwen: ai declaration and ai history
-AI declaration: https://github.com/jaedonkhoo/SC2002_SCEB_Grp2/blob/dbbc44d5153d52a5bd94281cbf44b5f0b9577698/YE%20Diwen%20Declaration%20on%20Use%20of%20GAI%20Assistance.pdf
-
-AI chat history: https://github.com/jaedonkhoo/SC2002_SCEB_Grp2/blob/e01d3e4b13b7dfc4ecd7d23f7eff626ac7c6b1b5/YeDiwen-aichat-history
